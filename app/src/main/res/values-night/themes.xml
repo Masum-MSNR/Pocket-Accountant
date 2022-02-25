@@ -1,0 +1,39 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.PA" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#34495E</item>
+        <item name="colorPrimaryVariant">#213142</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#526070</item>
+        <item name="colorSecondaryVariant">#384453</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:fontFamily">@font/kohinoor_bangla_regular</item>
+
+    </style>
+
+    <style name="Theme.PA.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#34495E</item>
+        <item name="colorPrimaryVariant">#213142</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#526070</item>
+        <item name="colorSecondaryVariant">#384453</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/kohinoor_bangla_regular</item>
+    </style>
+
+    <style name="Theme.Background" parent="Theme.PA.NoActionBar">
+        <item name="android:windowBackground">@drawable/window_bg</item>
+    </style>
+
+</resources>

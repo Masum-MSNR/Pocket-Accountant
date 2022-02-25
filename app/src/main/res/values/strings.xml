@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name" translatable="false">Pocket Accountant</string>
+    <string name="splash_screen_title">Keep Track of Daily Expenses Easily</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
+    <string name="image" translatable="false">Image</string>
+    <string name="english" translatable="false">English</string>
+    <string name="bangla" translatable="false">বাংলা</string>
+    <string name="background_image" translatable="false">Background Image</string>
+    <string name="splash_screen_bottom_title">Create Account Now</string>
+    <string name="start_using">Start Using</string>
+    <string name="to_start_using_you_need_to_login_first">To start using you need to login first.</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="_continue">Continue</string>
+    <string name="extended_icon" translatable="false">Extended Icon</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="full_name">Full Name</string>
+    <string name="_start_using">Start Using</string>
+    <string name="account_created_command_1">Account created successfully. To start using enter your full name.</string>
+    <string name="account_created_command_2">To start using enter your full name.</string>
+    <string name="close_drawer" translatable="false">Close Drawer</string>
+    <string name="open_drawer" translatable="false"> Open Drawer</string>
+    <string name="select_account_type">Select Account Type</string>
+    <string name="select">Select</string>
+    <string name="tkSign" translatable="false">৳</string>
+    <string name="log_out">Log Out</string>
+    <string name="create_new_expense_command">No expense account? Create one right now.</string>
+    <string name="expense_account">Expense Account</string>
+    <string name="sorry">Sorry</string>
+    <string name="turn_on_internet_command">No internet connection. Please connect to internet and try again.</string>
+    <string name="otp_command">Don\'t receive OTP?</string>
+    <string name="please_enter_bellow">Please enter the code:</string>
+    <string name="otp_send_command">Six digit verification code is sent to</string>
+    <string name="resend_otp_command">Resend again in </string>
+    <string name="verify">Verify</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="account_title">Account Title</string>
+    <string name="number_of_people">Number of People</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="next">Next</string>
+    <string name="name">. Name</string>
+    <string name="person_name_error">Minimum 5 letter!</string>
+    <string name="title_error">Minimum 5 letter!</string>
+    <string name="nop_error_1">Minimum 2 people!</string>
+    <string name="nop_error_2">Maximum 5 people!</string>
+    <string name="paid"><![CDATA[<font color=\"#008000\">Paid: </font>]]></string>
+    <string name="cost"><![CDATA[<font color=\"#FF0000\">Cost: </font>]]></string>
+    <string name="due"><![CDATA[<font color=\"#800000\">Due: </font>]]></string>
+    <string name="owing"><![CDATA[<font color=\"#008000\">Owing: </font>]]></string>
+    <string name="connection_error">Connection Error!</string>
+    <string name="close">Close</string>
+    <string name="dummy_name" translatable="false">Nurullah</string>
+    <string name="dummy_date" translatable="false">Tue, Feb 15</string>
+    <string name="dummy_number" translatable="false">+8801797246959</string>
+    <string name="new_account">New Account</string>
+    <string name="import_data">Import Data</string>
+    <string name="backup_data">Backup Data</string>
+    <string name="date">Date</string>
+    <string name="description">Description</string>
+    <string name="total_cost">Total Cost</string>
+    <string name="_paid">Paid</string>
+    <string name="_cost">Cost</string>
+    <string name="equal">Equal</string>
+    <string name="single">Single</string>
+    <string name="multiple">Multiple</string>
+    <string name="add">Add</string>
+    <string name="_s_cost">\'s cost</string>
+    <string name="_s_amount">\'s amount</string>
+    <string name="account_id">Account Id</string>
+    <string name="old_account">Old Account</string>
+
+
+    <string-array name="account_types">
+        <item>Personal Expense</item>
+        <item>Collective Expense</item>
+        <item>Hostel Expense</item>
+    </string-array>
+</resources>
