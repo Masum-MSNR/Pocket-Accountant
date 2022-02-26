@@ -4,6 +4,7 @@ import static com.me.pa.others.Constants.TAG_ACCOUNT_NAME;
 import static com.me.pa.others.Constants.TAG_CEA;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,7 +34,6 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
     MonthOfYearAdapter monthOfYearAdapter;
     ArrayList<Integer> months;
     ArrayList<CEARow> caRows;
-    ArrayList<String> names;
     CEARowAdapter adapter;
 
     DataRepo dataRepo;
@@ -55,34 +55,34 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
 
         account = (CEA) getIntent().getSerializableExtra(TAG_CEA);
         dataRepo = DataRepo.getInstance(this);
+        Log.v("Names",account.getNames().toString());
 
         binding.toolbar.setTitle(getIntent().getStringExtra(TAG_ACCOUNT_NAME));
 
-        months = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableTableList().getValue()).get(account.getTableId())).keySet());
+        months = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEATableList().getValue()).get(account.getTableId())).keySet());
         oldMonthRange = months.size();
-        if (months.size() > 0) {
-            month = months.get(0);
-            caRows = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableTableList().getValue().get(account.getTableId())).get(months.get(0))));
-            oldCeaRowRange = caRows.size();
-        } else {
-            caRows = new ArrayList<>();
-        }
-        names = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCeaPersonNamesList().getValue()).get(account.getTableId())));
-
 
         monthOfYearAdapter = new MonthOfYearAdapter(this, months, this);
         binding.monthRv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         binding.monthRv.setAdapter(monthOfYearAdapter);
 
-        adapter = new CEARowAdapter(this, caRows, names);
+        if (months.size() > 0) {
+            month = months.get(0);
+            caRows = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEATableList().getValue().get(account.getTableId())).get(months.get(0))));
+            oldCeaRowRange = caRows.size();
+        } else {
+            caRows = new ArrayList<>();
+        }
+
+        adapter = new CEARowAdapter(this, caRows, account.getNames());
         binding.tableRv.setLayoutManager(new LinearLayoutManager(this));
         binding.tableRv.setAdapter(adapter);
 
 
-        dataRepo.getMutableTableList().observe(ViewCollectiveAccount.this, stringLinkedHashMapLinkedHashMap -> {
+        dataRepo.getMutableCEATableList().observe(ViewCollectiveAccount.this, stringLinkedHashMapLinkedHashMap -> {
             if (Objects.requireNonNull(stringLinkedHashMapLinkedHashMap.get(account.getTableId())).size() != oldMonthRange) {
                 months.clear();
-                months.addAll(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableTableList().getValue()).get(account.getTableId())).keySet());
+                months.addAll(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEATableList().getValue()).get(account.getTableId())).keySet());
                 monthOfYearAdapter.notifyItemRangeRemoved(0, oldMonthRange);
                 monthOfYearAdapter.notifyItemRangeChanged(0, months.size());
                 oldMonthRange = months.size();
@@ -95,7 +95,7 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
 
             if (Objects.requireNonNull(stringLinkedHashMapLinkedHashMap.get(account.getTableId())).get(month) != null) {
                 caRows.clear();
-                caRows.addAll(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableTableList().getValue().get(account.getTableId())).get(month)));
+                caRows.addAll(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEATableList().getValue().get(account.getTableId())).get(month)));
                 adapter.notifyItemRangeRemoved(0, oldCeaRowRange);
                 adapter.notifyItemRangeChanged(0, caRows.size());
                 oldCeaRowRange = caRows.size();
@@ -124,10 +124,10 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
     }
 
     @Override
-    public void onRvClicked(int monthYear) {
-        month = monthYear;
+    public void onRvClicked(int inT) {
+        month = inT;
         caRows.clear();
-        caRows.addAll(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableTableList().getValue()).get(account.getTableId())).get(month)));
+        caRows.addAll(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEATableList().getValue()).get(account.getTableId())).get(month)));
 
         adapter.notifyItemRangeRemoved(0, oldCeaRowRange);
         adapter.notifyItemRangeChanged(0, caRows.size());

@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -103,7 +104,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if (repo.getAccountType().equals(TYPE_ONLINE) && runService) {
             Intent intent;
-            cea.setId(Objects.requireNonNull(DataRepo.getInstance(context).getMutableCEAAccountList().getValue()).size() + 1);
+            cea.setId(Objects.requireNonNull(DataRepo.getInstance(context).getMutableCEAList().getValue()).size() + 1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 intent = new Intent(context, DataLoaderServiceF.class);
                 intent.putExtra(TAG_PHONE_NUMBER, repo.getNumber());
@@ -123,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean isTableExists(String tableId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "select id from accounts where tableId='" + tableId+"'";
+        String query = "select id from accounts where tableId='" + tableId + "'";
         Cursor cursor = db.rawQuery(query, null);
         boolean result = cursor.getCount() > 0;
         cursor.close();
@@ -275,13 +276,13 @@ public class DBHelper extends SQLiteOpenHelper {
         LinkedHashMap<String, CEA> ceaMap = new LinkedHashMap<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from collectiveAccounts", null);
-        ArrayList<String> names = new ArrayList<>();
         while (cursor.moveToNext()) {
-            names.clear();
+            ArrayList<String> names = new ArrayList<>();
             for (int i = 0; i < cursor.getInt(1); i++) {
                 names.add(cursor.getString(4 + i));
             }
-            ceaMap.put(cursor.getString(3), new CEA(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), names));
+            CEA cea=new CEA(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), names);
+            ceaMap.put(cursor.getString(3), cea);
         }
         cursor.close();
         db.close();
@@ -310,7 +311,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     personExpenses.add(new PersonExpense(name, paid, cost, 0, 0));
                 }
             }
-
             ceaPersonExpensesMap.put(tableId, personExpenses);
         }
         cursor.close();

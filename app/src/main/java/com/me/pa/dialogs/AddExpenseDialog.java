@@ -74,7 +74,7 @@ public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAm
         datePicker.initDialog(context, binding.dateEt);
 
         viewModel = new ViewModelProvider(this).get(DialogAddExpenseVM.class);
-        viewModel.init(context, account.getTableId());
+        viewModel.init(context, account);
 
 
         paidNameAdapter = new ArrayAdapter<>(

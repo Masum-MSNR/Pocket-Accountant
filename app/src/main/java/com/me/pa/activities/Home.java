@@ -6,6 +6,7 @@ import static com.me.pa.others.Constants.TYPE_ONLINE;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.me.pa.dialogs.ConnectCEADialog;
 import com.me.pa.helpers.OnlineDBHelper;
 import com.me.pa.models.ExpenseAccount;
 import com.me.pa.others.Functions;
+import com.me.pa.others.RVClickListener;
 import com.me.pa.repos.DataRepo;
 import com.me.pa.repos.UserRepo;
 
@@ -42,7 +44,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements RVClickListener {
 
     ActivityHomeBinding binding;
     UserRepo userRepo;
@@ -52,8 +54,8 @@ public class Home extends AppCompatActivity {
     ExpenseAccountAdapter adapter;
     View navHeader;
     OnlineDBHelper onlineDBHelper;
-
     ArrayList<ExpenseAccount> accounts;
+    int oldAccountListSize = 0, clickedRvChild = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class Home extends AppCompatActivity {
         if (getIntent().getBooleanExtra(IS_DATA_LOADED, false)) {
             onlineDBHelper.getBackUpData();
         }
+
 
         setSupportActionBar(binding.homeToolbar);
 
@@ -99,7 +102,8 @@ public class Home extends AppCompatActivity {
 
         accounts = new ArrayList<>(Objects.requireNonNull(DataRepo.getInstance(Home.this).getMutableExpenseAccountList().getValue()));
         Collections.reverse(accounts);
-        adapter = new ExpenseAccountAdapter(Home.this, accounts);
+        oldAccountListSize = accounts.size();
+        adapter = new ExpenseAccountAdapter(Home.this, accounts, this);
 
         binding.accountsRv.setLayoutManager(new LinearLayoutManager(Home.this));
         binding.accountsRv.setAdapter(adapter);
@@ -108,12 +112,17 @@ public class Home extends AppCompatActivity {
             accounts.clear();
             accounts.addAll(expenseAccounts);
             Collections.reverse(accounts);
-            adapter.notifyItemRangeChanged(0, accounts.size());
-            if(userRepo.getAccountType().equals(TYPE_ONLINE)){
+
+            if (clickedRvChild != -1) {
+                adapter.notifyItemChanged(clickedRvChild);
+            } else {
+                adapter.notifyItemRangeChanged(0, accounts.size());
+            }
+
+            if (userRepo.getAccountType().equals(TYPE_ONLINE)) {
                 adapter.refreshListeners();
             }
             binding.cv.setVisibility(accounts.size() == 0 ? View.VISIBLE : View.GONE);
-
         });
 
         binding.addBt.setOnClickListener(v -> {
@@ -162,8 +171,20 @@ public class Home extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        clickedRvChild = -1;
+        super.onResume();
+    }
+
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         adapter.destroyListeners();
+    }
+
+    @Override
+    public void onRvClicked(int inT) {
+        clickedRvChild = inT;
     }
 }

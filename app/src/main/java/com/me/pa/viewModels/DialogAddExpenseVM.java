@@ -8,28 +8,21 @@ import androidx.lifecycle.ViewModel;
 
 import com.me.pa.helpers.DBHelper;
 import com.me.pa.models.CEA;
-import com.me.pa.repos.DataRepo;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class DialogAddExpenseVM extends ViewModel {
 
-    ArrayList<String> names;
-    CEA caAccount;
-    String tableName = "";
+    CEA cea;
     DBHelper dbHelper;
 
-    public void init(Context context, String title) {
-        names = new ArrayList<>();
+    public void init(Context context, CEA cea) {
         dbHelper = new DBHelper(context);
-        tableName = TAG_TABLE + title;
-        caAccount = Objects.requireNonNull(DataRepo.getInstance(context).getMutableCEAAccountList().getValue()).get(title);
-        names = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(DataRepo.getInstance(context).getMutableCeaPersonNamesList().getValue()).get(title)));
+        this.cea = cea;
     }
 
     public ArrayList<String> getNames() {
-        return names;
+        return cea.getNames();
     }
 
     public boolean isFormValid(boolean v1, boolean v2, boolean v3) {
@@ -58,48 +51,48 @@ public class DialogAddExpenseVM extends ViewModel {
 
     public void saveExpense(int date, String title, double totalCost) {
         ArrayList<Double> amounts = new ArrayList<>();
-        for (int i = 0; i < caAccount.getNoOfPerson(); i++) {
-            amounts.add(totalCost / caAccount.getNoOfPerson());
+        for (int i = 0; i < cea.getNoOfPerson(); i++) {
+            amounts.add(totalCost / cea.getNoOfPerson());
         }
-        dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, amounts, amounts);
+        dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), amounts, amounts);
     }
 
 
     public void saveExpense(int date, String title, double totalCost, String singleName, int type) {
         if (type == 1) {
             ArrayList<Double> paidAmounts = new ArrayList<>();
-            for (int i = 0; i < caAccount.getNoOfPerson(); i++) {
-                paidAmounts.add(totalCost / caAccount.getNoOfPerson());
+            for (int i = 0; i < cea.getNoOfPerson(); i++) {
+                paidAmounts.add(totalCost / cea.getNoOfPerson());
             }
             ArrayList<Double> costAmounts = new ArrayList<>();
-            for (String name : names) {
+            for (String name : cea.getNames()) {
                 if (name.equals(singleName)) {
                     costAmounts.add(totalCost);
                 } else {
                     costAmounts.add(0.0);
                 }
             }
-            dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, costAmounts, paidAmounts);
+            dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), costAmounts, paidAmounts);
         } else if (type == 2) {
             ArrayList<Double> costAmounts = new ArrayList<>();
-            for (int i = 0; i < caAccount.getNoOfPerson(); i++) {
-                costAmounts.add(totalCost / caAccount.getNoOfPerson());
+            for (int i = 0; i < cea.getNoOfPerson(); i++) {
+                costAmounts.add(totalCost / cea.getNoOfPerson());
             }
             ArrayList<Double> paidAmounts = new ArrayList<>();
-            for (String name : names) {
+            for (String name : cea.getNames()) {
                 if (name.equals(singleName)) {
                     paidAmounts.add(totalCost);
                 } else {
                     paidAmounts.add(0.0);
                 }
             }
-            dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, costAmounts, paidAmounts);
+            dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), costAmounts, paidAmounts);
         }
     }
 
     public void saveExpense(int date, String title, double totalCost, String singlePaidName, String singleCostName) {
         ArrayList<Double> costAmounts = new ArrayList<>();
-        for (String name : names) {
+        for (String name : cea.getNames()) {
             if (name.equals(singleCostName)) {
                 costAmounts.add(totalCost);
             } else {
@@ -107,58 +100,58 @@ public class DialogAddExpenseVM extends ViewModel {
             }
         }
         ArrayList<Double> paidAmounts = new ArrayList<>();
-        for (String name : names) {
+        for (String name : cea.getNames()) {
             if (name.equals(singlePaidName)) {
                 paidAmounts.add(totalCost);
             } else {
                 paidAmounts.add(0.0);
             }
         }
-        dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, costAmounts, paidAmounts);
+        dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), costAmounts, paidAmounts);
     }
 
     public void saveExpense(int date, String title, double totalCost, ArrayList<Double> amounts, int type) {
         if (type == 1) {
             ArrayList<Double> paidAmounts = new ArrayList<>();
-            for (int i = 0; i < caAccount.getNoOfPerson(); i++) {
-                paidAmounts.add(totalCost / caAccount.getNoOfPerson());
+            for (int i = 0; i < cea.getNoOfPerson(); i++) {
+                paidAmounts.add(totalCost / cea.getNoOfPerson());
             }
-            dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, amounts, paidAmounts);
+            dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), amounts, paidAmounts);
         } else if (type == 2) {
             ArrayList<Double> costAmounts = new ArrayList<>();
-            for (int i = 0; i < caAccount.getNoOfPerson(); i++) {
-                costAmounts.add(totalCost / caAccount.getNoOfPerson());
+            for (int i = 0; i < cea.getNoOfPerson(); i++) {
+                costAmounts.add(totalCost / cea.getNoOfPerson());
             }
-            dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, costAmounts, amounts);
+            dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), costAmounts, amounts);
         }
     }
 
     public void saveExpense(int date, String title, double totalCost, String singleName, ArrayList<Double> amounts, int type) {
         if (type == 1) {
             ArrayList<Double> paidAmounts = new ArrayList<>();
-            for (String name : names) {
+            for (String name : cea.getNames()) {
                 if (name.equals(singleName)) {
                     paidAmounts.add(totalCost);
                 } else {
                     paidAmounts.add(0.0);
                 }
             }
-            dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, amounts, paidAmounts);
+            dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), amounts, paidAmounts);
         } else if (type == 2) {
             ArrayList<Double> costAmounts = new ArrayList<>();
-            for (String name : names) {
+            for (String name : cea.getNames()) {
                 if (name.equals(singleName)) {
                     costAmounts.add(totalCost);
                 } else {
                     costAmounts.add(0.0);
                 }
             }
-            dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, costAmounts, amounts);
+            dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), costAmounts, amounts);
         }
     }
 
     public void saveExpense(int date, String title, double totalCost, ArrayList<Double> paidAmounts, ArrayList<Double> costAmounts) {
-        dbHelper.saveCEAExpense(tableName, date, title, totalCost, names, costAmounts, paidAmounts);
+        dbHelper.saveCEAExpense(TAG_TABLE + cea.getTableId(), date, title, totalCost, cea.getNames(), costAmounts, paidAmounts);
     }
 
     @Override

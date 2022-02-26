@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.me.pa.R;
 import com.me.pa.databinding.AdapterMonthOfYearLayoutBinding;
 import com.me.pa.others.RVClickListener;
+import com.me.pa.repos.UserRepo;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -27,11 +28,13 @@ public class MonthOfYearAdapter extends RecyclerView.Adapter<MonthOfYearAdapter.
     ArrayList<Integer> months;
     RVClickListener listener;
     int selectedIndex = 0;
+    Locale language;
 
     public MonthOfYearAdapter(Context context, ArrayList<Integer> months, RVClickListener listener) {
         this.context = context;
         this.months = months;
         this.listener = listener;
+        language = Locale.forLanguageTag(UserRepo.getInstance().getLanguage());
     }
 
     @NonNull
@@ -53,6 +56,8 @@ public class MonthOfYearAdapter extends RecyclerView.Adapter<MonthOfYearAdapter.
             h.binding.monthYearTv.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
         h.binding.getRoot().setOnClickListener(v -> {
+            if(selectedIndex==p)
+                return;
             listener.onRvClicked(months.get(p));
             notifyItemChanged(selectedIndex);
             selectedIndex = p;
@@ -96,15 +101,15 @@ public class MonthOfYearAdapter extends RecyclerView.Adapter<MonthOfYearAdapter.
         String month = date.substring(4, 6);
         sDate = month + "/" + year;
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/yyyy", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/yyyy", language);
         Date dt = null;
         try {
             dt = simpleDateFormat.parse(sDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        DateFormat monthF = new SimpleDateFormat("MMM", Locale.getDefault());
-        sDate = monthF.format(Objects.requireNonNull(dt)) + ", " + year;
+        DateFormat monthF = new SimpleDateFormat("MMM", language);
+        sDate = monthF.format(Objects.requireNonNull(dt)) + ", " + String.format(language, "%d", Integer.valueOf(year));
         return sDate;
     }
 }

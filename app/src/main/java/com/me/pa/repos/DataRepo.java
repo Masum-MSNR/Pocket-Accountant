@@ -16,36 +16,35 @@ import java.util.LinkedHashMap;
 public class DataRepo {
     private static DataRepo instance;
 
-    private MutableLiveData<ArrayList<ExpenseAccount>> mutableExpenseAccountList;
-    private MutableLiveData<LinkedHashMap<String, CEA>> mutableCEAAccountList;
-    private MutableLiveData<LinkedHashMap<String, ArrayList<PersonExpense>>> mutableCEAPersonsExpenseList;
-    private MutableLiveData<LinkedHashMap<String, Double>> mutableCEATotalCostList;
-    private MutableLiveData<LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<CEARow>>>> mutableTableList;
-    private MutableLiveData<LinkedHashMap<String, ArrayList<String>>> mutableCeaPersonNamesList;
+    private MutableLiveData<ArrayList<ExpenseAccount>> mutableExpenseAccountList; //n
+    private MutableLiveData<LinkedHashMap<String, CEA>> mutableCEAList; //n
+    private MutableLiveData<LinkedHashMap<String, ArrayList<PersonExpense>>> mutableCEAPersonsExpenseList; //n
+    private MutableLiveData<LinkedHashMap<String, Double>> mutableCEATotalCostList; //n
+    private MutableLiveData<LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<CEARow>>>> mutableCEATableList; //n
 
 
     public DataRepo(Context context) {
         initiate(context);
     }
 
+
     public void initiate(Context context) {
         DBHelper dbHelper = new DBHelper(context);
         mutableExpenseAccountList = new MutableLiveData<>(dbHelper.getExpenseAccounts());
-        mutableCEAAccountList = new MutableLiveData<>(dbHelper.getCEAAccounts());
+        mutableCEAList = new MutableLiveData<>(dbHelper.getCEAAccounts());
         mutableCEAPersonsExpenseList = new MutableLiveData<>(dbHelper.getCEAPersonExpenses());
         mutableCEATotalCostList = new MutableLiveData<>(dbHelper.getCEATotalCosts());
-        mutableTableList = new MutableLiveData<>(dbHelper.getCEATables());
-        mutableCeaPersonNamesList = new MutableLiveData<>(dbHelper.getCEAPersonNames());
+        mutableCEATableList = new MutableLiveData<>(dbHelper.getCEATables());
         dbHelper.close();
     }
 
+
     public void update(Context context) {
         loadMutableExpenseAccountList(context);
-        loadMutableCEAAccountList(context);
+        loadMutableCEAList(context);
         loadMutableCEAPersonsExpenseList(context);
         loadMutableCEATotalCostList(context);
-        loadCEATables(context);
-        loadMutableCeaPersonNamesList(context);
+        loadMutableCEATables(context);
     }
 
 
@@ -62,9 +61,9 @@ public class DataRepo {
         dbHelper.close();
     }
 
-    private void loadMutableCEAAccountList(Context context) {
+    private void loadMutableCEAList(Context context) {
         DBHelper dbHelper = new DBHelper(context);
-        mutableCEAAccountList.setValue(dbHelper.getCEAAccounts());
+        mutableCEAList.setValue(dbHelper.getCEAAccounts());
         dbHelper.close();
     }
 
@@ -81,15 +80,9 @@ public class DataRepo {
         dbHelper.close();
     }
 
-    private void loadCEATables(Context context) {
+    private void loadMutableCEATables(Context context) {
         DBHelper dbHelper = new DBHelper(context);
-        mutableTableList.setValue(dbHelper.getCEATables());
-        dbHelper.close();
-    }
-
-    private void loadMutableCeaPersonNamesList(Context context) {
-        DBHelper dbHelper = new DBHelper(context);
-        mutableCeaPersonNamesList.setValue(dbHelper.getCEAPersonNames());
+        mutableCEATableList.setValue(dbHelper.getCEATables());
         dbHelper.close();
     }
 
@@ -105,15 +98,15 @@ public class DataRepo {
         return mutableCEATotalCostList;
     }
 
-    public MutableLiveData<LinkedHashMap<String, CEA>> getMutableCEAAccountList() {
-        return mutableCEAAccountList;
+    public MutableLiveData<LinkedHashMap<String, CEA>> getMutableCEAList() {
+        return mutableCEAList;
     }
 
-    public MutableLiveData<LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<CEARow>>>> getMutableTableList() {
-        return mutableTableList;
+    public MutableLiveData<LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<CEARow>>>> getMutableCEATableList() {
+        return mutableCEATableList;
     }
 
-    public MutableLiveData<LinkedHashMap<String, ArrayList<String>>> getMutableCeaPersonNamesList() {
-        return mutableCeaPersonNamesList;
+    public void destroy() {
+        instance = null;
     }
 }

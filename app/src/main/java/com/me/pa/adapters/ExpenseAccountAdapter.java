@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ import com.me.pa.databinding.AdapterCollectiveExpenseAccountLayoutBinding;
 import com.me.pa.helpers.DBHelper;
 import com.me.pa.models.ExpenseAccount;
 import com.me.pa.models.PersonExpense;
-import com.me.pa.others.Functions;
+import com.me.pa.others.RVClickListener;
 import com.me.pa.repos.DataRepo;
 import com.me.pa.repos.UserRepo;
 import com.me.pa.services.DataLoaderServiceB;
@@ -58,16 +57,22 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
     ArrayList<DatabaseReference> references;
     DataRepo dataRepo;
     UserRepo userRepo;
+    RVClickListener listener;
+    Locale language;
+
     int calledListenersSize = 0;
 
 
-    public ExpenseAccountAdapter(Context context, ArrayList<ExpenseAccount> accounts) {
+    public ExpenseAccountAdapter(Context context, ArrayList<ExpenseAccount> accounts, RVClickListener listener) {
         this.context = context;
         this.accounts = accounts;
+        this.listener = listener;
         dataRepo = DataRepo.getInstance(context);
         userRepo = UserRepo.getInstance();
         references = new ArrayList<>();
         listeners = new ArrayList<>();
+        language = Locale.forLanguageTag(UserRepo.getInstance().getLanguage());
+
     }
 
     @NonNull
@@ -83,11 +88,12 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
         h.binding.accountNameTv.setText(accounts.get(p).getAccountTitle());
         double totalCostD = Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEATotalCostList().getValue()).get(accounts.get(p).getTableId()));
 
-        String totalCost = (totalCostD != 0 ? context.getString(R.string.tkSign) + " " + Functions.convertNumberDOL(String.format(Locale.getDefault(), "%.2f", totalCostD)) : " - ");
+        String totalCost = (totalCostD != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", totalCostD) : " - ");
         h.binding.totalCostTv.setText(totalCost);
 
         ArrayList<PersonExpense> personExpenses = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEAPersonsExpenseList().getValue()).get(accounts.get(p).getTableId())));
         int noOfPerson = personExpenses.size();
+
 
         switch (noOfPerson) {
             case 5:
@@ -102,7 +108,10 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
                 break;
         }
 
-        h.itemView.setOnClickListener(v -> activityLauncher(accounts.get(p)));
+        h.itemView.setOnClickListener(v -> {
+            listener.onRvClicked(p);
+            activityLauncher(accounts.get(p));
+        });
         h.itemView.setOnLongClickListener(view -> {
             ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             String id = accounts.get(p).getTableId() + userRepo.getNumber().substring(4);
@@ -134,7 +143,7 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
         switch (expenseAccount.getType()) {
             case "cea":
                 intent = new Intent(context, ViewCollectiveAccount.class);
-                intent.putExtra(TAG_CEA, Objects.requireNonNull(dataRepo.getMutableCEAAccountList().getValue()).get(expenseAccount.getTableId()));
+                intent.putExtra(TAG_CEA, Objects.requireNonNull(dataRepo.getMutableCEAList().getValue()).get(expenseAccount.getTableId()));
                 intent.putExtra(TAG_ACCOUNT_NAME, expenseAccount.getAccountTitle());
                 context.startActivity(intent);
                 break;
@@ -147,13 +156,13 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
 
     private void layoutMaker(TextView nameTv, TextView paidTv, TextView costTv, TextView owingTv, TextView dueTv, LinearLayout ll, PersonExpense personExpense) {
         nameTv.setText(personExpense.getName());
-        String paid = context.getString(R.string.paid) + (personExpense.getPaid() != 0 ? context.getString(R.string.tkSign) + " " + Functions.convertNumberDOL(String.format(Locale.getDefault(), "%.2f", personExpense.getPaid())) : " - ");
+        String paid = context.getString(R.string.paid) + (personExpense.getPaid() != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", personExpense.getPaid()) : " - ");
         paidTv.setText(Html.fromHtml(paid));
-        String cost = context.getString(R.string.cost) + (personExpense.getCost() != 0 ? context.getString(R.string.tkSign) + " " + Functions.convertNumberDOL(String.format(Locale.getDefault(), "%.2f", personExpense.getCost())) : " - ");
+        String cost = context.getString(R.string.cost) + (personExpense.getCost() != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", personExpense.getCost()) : " - ");
         costTv.setText(Html.fromHtml(cost));
-        String owing = context.getString(R.string.owing) + (personExpense.getReceive() != 0 ? context.getString(R.string.tkSign) + " " + Functions.convertNumberDOL(String.format(Locale.getDefault(), "%.2f", personExpense.getReceive())) : " - ");
+        String owing = context.getString(R.string.owing) + (personExpense.getReceive() != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", personExpense.getReceive()) : " - ");
         owingTv.setText(Html.fromHtml(owing));
-        String due = context.getString(R.string.due) + (personExpense.getDue() != 0 ? context.getString(R.string.tkSign) + " " + Functions.convertNumberDOL(String.format(Locale.getDefault(), "%.2f", personExpense.getDue())) : " - ");
+        String due = context.getString(R.string.due) + (personExpense.getDue() != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", personExpense.getDue()) : " - ");
         dueTv.setText(Html.fromHtml(due));
         ll.setVisibility(View.VISIBLE);
     }
@@ -230,7 +239,7 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
                                     }
                                     ArrayList<Double> costAmounts = new ArrayList<>();
                                     ArrayList<Double> paidAmounts = new ArrayList<>();
-                                    int noOfPerson = Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCeaPersonNamesList().getValue()).get(expenseAccount.getTableId())).size();
+                                    int noOfPerson = Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEAList().getValue()).get(expenseAccount.getTableId())).getNames().size();
                                     for (int i = 7; i < (7 + noOfPerson); i++) {
                                         costAmounts.add(Double.parseDouble(results.get(i)));
                                     }
@@ -242,7 +251,7 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<ExpenseAccountAd
                                             Integer.parseInt(results.get(2)),
                                             results.get(3), results.get(4),
                                             results.get(5), Double.parseDouble(results.get(6)),
-                                            costAmounts, paidAmounts, Objects.requireNonNull(dataRepo.getMutableCeaPersonNamesList().getValue().get(expenseAccount.getTableId())));
+                                            costAmounts, paidAmounts, Objects.requireNonNull(dataRepo.getMutableCEAList().getValue().get(expenseAccount.getTableId())).getNames());
                                 }
                                 dbHelper1.updateCEARowCount(expenseAccount.getTableId(), _rowCount);
                                 dbHelper1.close();
