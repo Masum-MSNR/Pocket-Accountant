@@ -16,7 +16,6 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -65,6 +64,7 @@ public class OtpDialog extends AppCompatDialogFragment {
     TriggerListener triggerListener;
     String otp;
     boolean isPinViewFilled = false;
+    Locale language;
 
 
     public OtpDialog(Context context, String number, DismissListener listener, TriggerListener triggerListener) {
@@ -72,6 +72,7 @@ public class OtpDialog extends AppCompatDialogFragment {
         this.number = number;
         this.listener = listener;
         this.triggerListener = triggerListener;
+        language = Locale.forLanguageTag(UserRepo.getInstance().getLanguage());
     }
 
     @NonNull
@@ -296,9 +297,9 @@ public class OtpDialog extends AppCompatDialogFragment {
             public void onTick(long l) {
                 String ts;
                 if (onBoardingRepo.getLocal().equals("en")) {
-                    ts = context.getString(R.string.resend_otp_command) + " " + String.format(Locale.getDefault(), "%2d", TimeUnit.MILLISECONDS.toSeconds(l) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)) + 1) + "s";
+                    ts = context.getString(R.string.resend_otp_command) + " " + String.format(language, "%2d", TimeUnit.MILLISECONDS.toSeconds(l) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)) + 1) + "s";
                 } else {
-                    ts = String.format(Locale.getDefault(), "%2d", TimeUnit.MILLISECONDS.toSeconds(l) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)) + 1) + "s" + " " + context.getString(R.string.resend_otp_command);
+                    ts = String.format(language, "%2d", TimeUnit.MILLISECONDS.toSeconds(l) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(l)) + 1) + "s" + " " + context.getString(R.string.resend_otp_command);
                 }
                 tv.setText(ts);
             }

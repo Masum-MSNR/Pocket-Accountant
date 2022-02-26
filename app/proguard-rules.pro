@@ -20,3 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class androidx.appcompat.widget.** { *; }
+-keep public class com.me.pa.models.** { *; }
