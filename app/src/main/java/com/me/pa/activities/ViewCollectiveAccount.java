@@ -4,7 +4,6 @@ import static com.me.pa.others.Constants.TAG_ACCOUNT_NAME;
 import static com.me.pa.others.Constants.TAG_CEA;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +16,7 @@ import com.me.pa.R;
 import com.me.pa.adapters.CEARowAdapter;
 import com.me.pa.adapters.MonthOfYearAdapter;
 import com.me.pa.databinding.ActivityViewCollectiveAccountBinding;
-import com.me.pa.dialogs.AddExpenseDialog;
+import com.me.pa.dialogs.AddCEDialog;
 import com.me.pa.models.CEA;
 import com.me.pa.models.CEARow;
 import com.me.pa.others.DialogCommunicator;
@@ -55,7 +54,6 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
 
         account = (CEA) getIntent().getSerializableExtra(TAG_CEA);
         dataRepo = DataRepo.getInstance(this);
-        Log.v("Names",account.getNames().toString());
 
         binding.toolbar.setTitle(getIntent().getStringExtra(TAG_ACCOUNT_NAME));
 
@@ -109,7 +107,7 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.add_expense) {
-            AddExpenseDialog addExpenseDialog = new AddExpenseDialog(this, account, this);
+            AddCEDialog addExpenseDialog = new AddCEDialog(this, account, this);
             addExpenseDialog.setCancelable(false);
             addExpenseDialog.show(getSupportFragmentManager(), addExpenseDialog.getTag());
         }
@@ -119,7 +117,7 @@ public class ViewCollectiveAccount extends AppCompatActivity implements RVClickL
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.vca_menu, menu);
+        inflater.inflate(R.menu.collective_expense_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

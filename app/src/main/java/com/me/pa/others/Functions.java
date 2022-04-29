@@ -22,6 +22,7 @@ import com.me.pa.repos.UserRepo;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 public class Functions {
@@ -70,23 +71,23 @@ public class Functions {
         editor.apply();
     }
 
-//    public static void cursorToString(Cursor cursor) {
-//        String cursorString = "";
-//        if (cursor.moveToFirst()) {
-//            String[] columnNames = cursor.getColumnNames();
-//            for (String name : columnNames)
-//                cursorString += String.format("%s ][ ", name);
-//            cursorString += "\n";
-//            do {
-//                for (String name : columnNames) {
-//                    cursorString += String.format("%s ][ ",
-//                            cursor.getString(cursor.getColumnIndex(name)));
-//                }
-//                cursorString += "\n";
-//            } while (cursor.moveToNext());
-//        }
-//        Log.v("Table", cursorString);
-//    }
+    public static void cursorToString(Cursor cursor) {
+        String cursorString = "";
+        if (cursor.moveToFirst()) {
+            String[] columnNames = cursor.getColumnNames();
+            for (String name : columnNames)
+                cursorString += String.format("%s ][ ", name);
+            cursorString += "\n";
+            do {
+                for (String name : columnNames) {
+                    cursorString += String.format("%s ][ ",
+                            cursor.getString(cursor.getColumnIndex(name)));
+                }
+                cursorString += "\n";
+            } while (cursor.moveToNext());
+        }
+        Log.v("Table", cursorString);
+    }
 
     @SuppressLint("Range")
     public static ArrayList<String> cursorToStringList(Cursor cursor) {
@@ -104,6 +105,32 @@ public class Functions {
         }
         cursor.close();
         return table;
+    }
+
+    @SuppressLint("Range")
+    public static LinkedHashMap<Integer,String> cursorToStringMap(Cursor cursor) {
+        LinkedHashMap<Integer,String> linkedHashMap=new LinkedHashMap<>();
+        if (cursor.moveToFirst()) {
+            String[] columnNames = cursor.getColumnNames();
+            do {
+                StringBuilder cursorString = new StringBuilder();
+                cursorString.append(cursor.getInt(0)).append("|");
+                cursorString.append(cursor.getInt(1)).append("|");
+                cursorString.append(cursor.getInt(2)).append("|");
+                cursorString.append(cursor.getString(3)).append("|");
+                cursorString.append(cursor.getString(4)).append("|");
+                cursorString.append(cursor.getString(5)).append("|");
+                cursorString.append(cursor.getString(6)).append("|");
+                cursorString.append(cursor.getString(7)).append("|");
+                cursorString.append(cursor.getDouble(8)).append("|");
+                for(int i=9;i<columnNames.length;i++){
+                    cursorString.append(cursor.getDouble(i)).append("|");
+                }
+                linkedHashMap.put(cursor.getInt(0),String.valueOf(cursorString));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return linkedHashMap;
     }
 
 

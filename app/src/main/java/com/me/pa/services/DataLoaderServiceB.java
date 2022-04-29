@@ -4,11 +4,8 @@ import static com.me.pa.others.Constants.FDR_CEA;
 import static com.me.pa.others.Constants.FDR_CEA_TABLES;
 import static com.me.pa.others.Constants.FDR_EXPENSE_ACCOUNTS;
 import static com.me.pa.others.Constants.TAG_CEA;
-import static com.me.pa.others.Constants.TAG_CURRENT_RC;
 import static com.me.pa.others.Constants.TAG_EXPENSE_ACCOUNT;
-import static com.me.pa.others.Constants.TAG_OLD_RC;
 import static com.me.pa.others.Constants.TAG_PHONE_NUMBER;
-import static com.me.pa.others.Constants.TAG_ROW_COUNT;
 import static com.me.pa.others.Constants.TAG_TABLE;
 import static com.me.pa.others.Constants.TAG_TABLE_NAME;
 import static com.me.pa.others.Constants.TAG_TYPE;
@@ -31,10 +28,10 @@ import java.util.LinkedHashMap;
 
 public class DataLoaderServiceB extends Service {
 
+    int count;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int currentRc = intent.getIntExtra(TAG_CURRENT_RC, 0);
-        int oldRc = intent.getIntExtra(TAG_OLD_RC, 0);
         String tableName = intent.getStringExtra(TAG_TABLE_NAME);
         String phoneNumber = intent.getStringExtra(TAG_PHONE_NUMBER);
         String type = intent.getStringExtra(TAG_TYPE);
@@ -51,7 +48,7 @@ public class DataLoaderServiceB extends Service {
                     break;
                 }
                 case TYPE_CEA_TABLE:
-                    startProcess(tableName, oldRc, currentRc);
+                    startProcess(tableName, phoneNumber);
                     break;
             }
         }).start();
@@ -79,24 +76,33 @@ public class DataLoaderServiceB extends Service {
         dbHelper.close();
     }
 
-    private void startProcess(String tableName, int oldRC, int currentRC) {
+    private void startProcess(String tableName, String number) {
         DBHelper dbHelper = new DBHelper(getApplicationContext());
-        LinkedHashMap<String, String> rowsMap = new LinkedHashMap<>(dbHelper.getSpecificRow(tableName, oldRC, currentRC));
-        dbHelper.updateCEARowCount(tableName.substring(1), currentRC);
-        for (String key : rowsMap.keySet()) {
-            FirebaseDatabase.getInstance().getReference(FDR_CEA_TABLES).child(tableName).child(TAG_TABLE).child(key).setValue(rowsMap.get(key)).addOnCompleteListener(t -> {
-                if (t.isSuccessful()) {
-                    FirebaseDatabase.getInstance().getReference(FDR_CEA_TABLES).child(tableName).child(TAG_ROW_COUNT).setValue(currentRC).addOnCompleteListener(t1 -> {
-                        if (t1.isSuccessful()) {
-                            if (Integer.parseInt(key) == currentRC) {
+        LinkedHashMap<Integer, String> map = dbHelper.getRowByUnSynced(tableName);
+        dbHelper.close();
+        if (map.size() == 0) {
+            stopSelf();
+        }
+        count = 0;
+        for (Integer id : map.keySet()) {
+            FirebaseDatabase.getInstance()
+                    .getReference(FDR_CEA_TABLES)
+                    .child(tableName)
+                    .child(TAG_TABLE).child(number)
+                    .child(String.valueOf(id))
+                    .setValue(map.get(id))
+                    .addOnCompleteListener(t -> {
+                        if (t.isSuccessful()) {
+                            count++;
+                            DBHelper db = new DBHelper(getApplicationContext());
+                            db.updateCEAById(tableName, "synced", "t", id);
+                            db.close();
+                            if (count == map.size()) {
                                 stopSelf();
                             }
                         }
                     });
-                }
-            });
         }
-        dbHelper.close();
     }
 
     @Nullable

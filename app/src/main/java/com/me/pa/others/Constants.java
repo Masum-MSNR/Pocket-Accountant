@@ -15,6 +15,7 @@ public class Constants {
     public static final String TAG_TYPE = "type";
     public static final String TAG_DATETIME = "dateTime";
     public static final String TAG_CEA = "cea";
+    public static final String TAG_PEA = "pea";
     public static final String TAG_EXPENSE_ACCOUNT = "expenseAccount";
     public static final String TAG_ACCOUNT_NAME = "accountName";
     public static final String TAG_TABLE_NAME = "tableName";
@@ -23,6 +24,7 @@ public class Constants {
     public static final String TAG_ROW_COUNT = "rowCount";
     public static final String TAG_TABLE = "T";
     public static final String TAG_PHONE_NUMBER = "phoneNumber";
+    public static final String TAG_UPDATING = "updating";
 
     public static final String KEY_FINISH_ACTIVITY = "finish_activity";
 
@@ -30,6 +32,7 @@ public class Constants {
 
     public static final String TYPE_ACCOUNT = "account";
     public static final String TYPE_CEA = "cea";
+    public static final String TYPE_PEA = "pea";
     public static final String TYPE_CEA_TABLE = "ceaTable";
     public static final String TYPE_OFFLINE = "offline";
     public static final String TYPE_ONLINE = "online";

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class CEARowAdapter extends RecyclerView.Adapter<CEARowAdapter.ViewHolder> {
 
@@ -94,9 +95,9 @@ public class CEARowAdapter extends RecyclerView.Adapter<CEARowAdapter.ViewHolder
         String _date = String.valueOf(caRows.get(p).getDate()).substring(2, 8);
         String details;
         if (_date.equals(date)) {
-            details = "(" + caRows.get(p).getEnteredBy() + ") " + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(6, 8))) + ":" + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(8, 10))) + " " +caRows.get(p).getTime().substring(10, 12);
+            details = "(" + caRows.get(p).getEnteredBy() + ") " + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(6, 8))) + ":" + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(8, 10))) + " " +caRows.get(p).getTime().substring(15, 17);
         } else {
-            details = "(" + caRows.get(p).getEnteredBy() + ") " + getDate("20" + date) + "  " + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(6, 8))) + ":" + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(8, 10))) + " " + caRows.get(p).getTime().substring(10, 12);
+            details = "(" + caRows.get(p).getEnteredBy() + ") " + getDate("20" + date) + "  " + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(6, 8))) + ":" + String.format(language,"%02d",Integer.parseInt(caRows.get(p).getTime().substring(8, 10))) + " " + caRows.get(p).getTime().substring(15, 17);
         }
         return details;
     }
@@ -117,7 +118,7 @@ public class CEARowAdapter extends RecyclerView.Adapter<CEARowAdapter.ViewHolder
         }
         DateFormat dayF = new SimpleDateFormat("EE", language);
         DateFormat monthF = new SimpleDateFormat("MMM", language);
-        sDate = dayF.format(dt) + ", " + monthF.format(dt) + " " + String.format(language, "%d", Integer.valueOf(day));
+        sDate = dayF.format(Objects.requireNonNull(dt)) + ", " + monthF.format(dt) + " " + String.format(language, "%d", Integer.valueOf(day));
         return sDate;
     }
 }

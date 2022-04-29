@@ -40,8 +40,8 @@
     <string name="create">Create</string>
     <string name="next">Next</string>
     <string name="name">. Name</string>
-    <string name="person_name_error">Minimum 5 letter!</string>
-    <string name="title_error">Minimum 5 letter!</string>
+    <string name="person_name_error">Minimum 2 letter!</string>
+    <string name="title_error">Minimum 2 letter!</string>
     <string name="nop_error_1">Minimum 2 people!</string>
     <string name="nop_error_2">Maximum 5 people!</string>
     <string name="paid"><![CDATA[<font color=\"#008000\">Paid: </font>]]></string>
@@ -69,7 +69,12 @@
     <string name="_s_amount">\'s amount</string>
     <string name="account_id">Account Id</string>
     <string name="old_account">Old Account</string>
-
+    <string name="total_cost_error">Enter total cost!</string>
+    <string name="income">Income</string>
+    <string name="expense">Expense</string>
+    <string name="_income"><![CDATA[<font color=\"#008000\">Income: </font>]]></string>
+    <string name="_expense"><![CDATA[<font color=\"#FF0000\">Expense: </font>]]></string>
+    <string name="amount">Amount</string>
 
     <string-array name="account_types">
         <item>Personal Expense</item>

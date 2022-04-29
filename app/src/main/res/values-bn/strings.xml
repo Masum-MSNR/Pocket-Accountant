@@ -32,8 +32,8 @@
     <string name="select_account_type">অ্যাকাউন্টের ধরন নির্বাচন করুন</string>
     <string name="select">নির্বাচন করুন</string>
     <string name="name">. নাম</string>
-    <string name="person_name_error">সর্বনিম্ন ৫টি অক্ষর!</string>
-    <string name="title_error">সর্বনিম্ন ৫টি অক্ষর!</string>
+    <string name="person_name_error">সর্বনিম্ন ২টি অক্ষর!</string>
+    <string name="title_error">সর্বনিম্ন ২টি অক্ষর!</string>
     <string name="nop_error_1">সর্বনিম্ন ২ জন!</string>
     <string name="nop_error_2">সর্বোচ্চ ৫ জন!</string>
     <string name="paid"><![CDATA[<font color=\"#008000\">পরিশোধ: </font>]]></string>
@@ -58,7 +58,12 @@
     <string name="_s_amount">&#160;এর পরিমাণ</string>
     <string name="account_id">অ্যাকাউন্ট আইডি</string>
     <string name="old_account">পুরানো অ্যাকাউন্ট</string>
-
+    <string name="total_cost_error">মোট খরচ লিখুন!</string>
+    <string name="income">আয়</string>
+    <string name="expense">ব্যয়</string>
+    <string name="_income"><![CDATA[<font color=\"#008000\">আয়: </font>]]></string>
+    <string name="_expense"><![CDATA[<font color=\"#FF0000\">ব্যয়: </font>]]></string>
+    <string name="amount">পরিমাণ</string>
 
     <string-array name="account_types">
         <item>ব্যক্তিগত খরচ</item>

@@ -2,13 +2,13 @@ package com.me.pa.dialogs;
 
 import static com.me.pa.others.Functions.hideKeyBoard;
 
-import android.animation.LayoutTransition;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -176,8 +176,18 @@ public class AddAccountDialog extends AppCompatDialogFragment implements RVValid
         });
 
         binding.createBt.setOnClickListener(v -> {
+            Log.v("Data", accountType);
             if (accountType.equals(types[0])) {
-                Toast.makeText(context, "Personal Expense", Toast.LENGTH_SHORT).show();
+                Log.v("Data", String.valueOf(isFromValid));
+                if (!isFromValid) {
+                    return;
+                }
+
+                dbHelper.createNewPEA(binding.accountTitleEt.getText().toString(), true);
+                DataRepo.getInstance(context).update(context);
+                dbHelper.close();
+                hideKeyBoard(context, binding.createBt);
+                dismiss();
             } else if (accountType.equals(types[1])) {
                 if (!collectiveExpenseValidity) {
                     return;
@@ -202,8 +212,9 @@ public class AddAccountDialog extends AppCompatDialogFragment implements RVValid
 
     public void layoutChanger() {
         if (accountType.equals(types[0])) {
-            binding.createBt.setTextColor(viewModel.isFormValid(viewModel.isAccountTitleValid(binding.accountTitleEt.getText().toString()), accountType, types) ? getResources().getColor(android.R.color.white, null) : getResources().getColor(R.color.gray, null));
-            binding.createBt.setBackgroundTintList(viewModel.isFormValid(viewModel.isAccountTitleValid(binding.accountTitleEt.getText().toString()), accountType, types) ? ContextCompat.getColorStateList(context, R.color.color_primary) : ContextCompat.getColorStateList(context, R.color.light_gray));
+            isFromValid = viewModel.isFormValid(viewModel.isAccountTitleValid(binding.accountTitleEt.getText().toString()), accountType, types);
+            binding.createBt.setTextColor(isFromValid ? getResources().getColor(android.R.color.white, null) : getResources().getColor(R.color.gray, null));
+            binding.createBt.setBackgroundTintList(isFromValid ? ContextCompat.getColorStateList(context, R.color.color_primary) : ContextCompat.getColorStateList(context, R.color.light_gray));
             binding.createBt.setVisibility(View.VISIBLE);
             binding.noOfPeopleEt.setVisibility(View.GONE);
             binding.nextBt.setVisibility(View.GONE);

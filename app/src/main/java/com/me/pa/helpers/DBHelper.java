@@ -3,9 +3,7 @@ package com.me.pa.helpers;
 import static com.me.pa.others.Constants.CN_TOTAL_COST;
 import static com.me.pa.others.Constants.SQLITE_DATABASE_NAME;
 import static com.me.pa.others.Constants.TAG_CEA;
-import static com.me.pa.others.Constants.TAG_CURRENT_RC;
 import static com.me.pa.others.Constants.TAG_EXPENSE_ACCOUNT;
-import static com.me.pa.others.Constants.TAG_OLD_RC;
 import static com.me.pa.others.Constants.TAG_PHONE_NUMBER;
 import static com.me.pa.others.Constants.TAG_TABLE;
 import static com.me.pa.others.Constants.TAG_TABLE_NAME;
@@ -14,6 +12,8 @@ import static com.me.pa.others.Constants.TYPE_ACCOUNT;
 import static com.me.pa.others.Constants.TYPE_CEA;
 import static com.me.pa.others.Constants.TYPE_CEA_TABLE;
 import static com.me.pa.others.Constants.TYPE_ONLINE;
+import static com.me.pa.others.Constants.TYPE_PEA;
+import static com.me.pa.others.Functions.cursorToString;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +21,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -44,7 +43,7 @@ import java.util.Objects;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private UserRepo repo;
+    private final UserRepo repo;
     Context context;
 
     public DBHelper(@Nullable Context context) {
@@ -132,8 +131,31 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public boolean isRowExists(String tableName, String time, String number) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select id from "
+                + tableName + " where time='"
+                + time + "' and number='" + number + "'";
+        Cursor cursor = db.rawQuery(query, null);
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return result;
+    }
+
 
     public int getRowCount(String tableId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String tableName = TAG_TABLE + tableId;
+        Cursor cursor = db.rawQuery("SELECT * FROM " + tableName, null);
+        cursor.moveToNext();
+        int rowCount = cursor.getCount();
+        cursor.close();
+        db.close();
+        return rowCount;
+    }
+
+    public int getOldRowCount(String tableId) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select rowCount from collectiveAccounts WHERE tableId=" + tableId, null);
         cursor.moveToNext();
@@ -142,6 +164,52 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return rowCount;
     }
+
+
+    //All About Personal Expense Account
+
+    public void createNewPEA(String accountTitle, boolean runService) {
+        SimpleDateFormat ft = new SimpleDateFormat("yyMMddHHmmssSSS", Locale.getDefault());
+        String dateTime = ft.format(new Date());
+
+        insertIntoAccounts(new ExpenseAccount(accountTitle, TYPE_PEA, dateTime), runService);
+
+
+        createNewPEATable(TAG_TABLE + dateTime);
+    }
+
+    public void createNewPEATable(String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("Create Table " + tableName + "(id INTEGER Primary key AUTOINCREMENT,date INT,monthYear INT,time TEXT,description TEXT,income DOUBLE,expense DOUBLE,type INT)");
+        db.close();
+    }
+
+    public void insertIntoPE(String tableName,
+                             int date,
+                             String description,
+                             double amount,
+                             int type) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssSSSa", Locale.getDefault());
+        String time = ft.format(new Date());
+        String query = "insert into " + tableName + "(date,monthYear,time,description,income,expense,type) " +
+                "Values(" + date + "," + Integer.parseInt(String.valueOf(date).substring(0, 6)) + ",'" + time + "','" + description + "'," + (type == 1 ? amount : 0) + "," + (type == 2 ? amount : 0) + "," + type + ")";
+        db.execSQL(query);
+        db.close();
+        getPE(tableName.substring(1));
+    }
+
+    public void getPE(String tableId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String tableName = TAG_TABLE + tableId;
+        Cursor cursor = db.rawQuery("SELECT * FROM " + tableName, null);
+        cursor.moveToNext();
+        cursorToString(cursor);
+        db.close();
+    }
+
+
+    //All About Personal Expense Account
 
 
     //All About Collective Expense Account
@@ -166,90 +234,129 @@ public class DBHelper extends SQLiteOpenHelper {
         for (String name : names) {
             paidHeader.append(",").append(name).append("_paid").append(" DOUBLE");
         }
-        db.execSQL("Create Table " + tableName + "(id INTEGER Primary key AUTOINCREMENT,date INT,monthYear INT,time TEXT,enteredBy TEXT,description TEXT,totalCost DOUBLE" + costHeader + paidHeader + ")");
+        db.execSQL("Create Table " + tableName + "(id INTEGER Primary key AUTOINCREMENT,date INT,monthYear INT,time TEXT,enteredBy TEXT,number TEXT,synced TEXT,description TEXT,totalCost DOUBLE" + costHeader + paidHeader + ")");
         db.close();
     }
 
-    public void saveCEAExpense(String tableName, int date, String description, double totalCost, ArrayList<String> names, ArrayList<Double> costAmounts, ArrayList<Double> paidAmounts) {
+    public void insertIntoCEA(String tableName,
+                              int date,
+                              String description,
+                              double totalCost,
+                              ArrayList<String> names,
+                              ArrayList<Double> costs,
+                              ArrayList<Double> paids) {
         SQLiteDatabase db = this.getWritableDatabase();
-        SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmma", Locale.getDefault());
+        SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssSSSa", Locale.getDefault());
         String time = ft.format(new Date());
         StringBuilder costHeader = new StringBuilder();
-        for (String name : names) {
-            costHeader.append(",").append(name.replaceAll(" ", "_")).append("_cost");
-        }
         StringBuilder paidHeader = new StringBuilder();
-        for (String name : names) {
-            paidHeader.append(",").append(name.replaceAll(" ", "_")).append("_paid");
-        }
         StringBuilder costList = new StringBuilder();
-        for (double cost : costAmounts) {
-            costList.append(",").append(cost);
-        }
         StringBuilder paidList = new StringBuilder();
-        for (double cost : paidAmounts) {
-            paidList.append(",").append(cost);
+        String number = repo.getNumber() == null ? "0" : repo.getNumber();
+        for (int i = 0; i < names.size(); i++) {
+            costHeader.append(",").append(names.get(i).replaceAll(" ", "_")).append("_cost");
+            paidHeader.append(",").append(names.get(i).replaceAll(" ", "_")).append("_paid");
+            costList.append(",").append(costs.get(i));
+            paidList.append(",").append(paids.get(i));
         }
-        String query = "insert into " + tableName + "(date,monthYear,description,totalCost" + costHeader + paidHeader + ",time,enteredBy) Values(" + date + "," + Integer.parseInt(String.valueOf(date).substring(0, 6)) + ",'" + description + "'," + totalCost + costList + paidList + ",'" + time + "','" + repo.getName() + "')";
+        String query = "insert into " + tableName
+                + "(date,monthYear,description,totalCost"
+                + costHeader + paidHeader
+                + ",time,enteredBy,number,synced) Values("
+                + date + "," + Integer.parseInt(String.valueOf(date).substring(0, 6))
+                + ",'" + description + "'," + totalCost + costList + paidList
+                + ",'" + time + "','" + repo.getName() + "','" + number + "','f')";
         db.execSQL(query);
+        db.close();
 
         if (repo.getAccountType().equals(TYPE_ONLINE)) {
             Intent intent;
-            Cursor cursor = db.rawQuery("SELECT * FROM " + tableName, null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 intent = new Intent(context, DataLoaderServiceF.class);
-                intent.putExtra(TAG_CURRENT_RC, cursor.getCount());
-                intent.putExtra(TAG_OLD_RC, getRowCount(tableName.substring(1)) + 1);
                 intent.putExtra(TAG_TABLE_NAME, tableName);
                 intent.putExtra(TAG_PHONE_NUMBER, repo.getNumber());
                 intent.putExtra(TAG_TYPE, TYPE_CEA_TABLE);
                 context.startForegroundService(intent);
             } else {
                 intent = new Intent(context, DataLoaderServiceB.class);
-                intent.putExtra(TAG_CURRENT_RC, cursor.getCount());
-                intent.putExtra(TAG_OLD_RC, getRowCount(tableName.substring(1)) + 1);
                 intent.putExtra(TAG_TABLE_NAME, tableName);
                 intent.putExtra(TAG_PHONE_NUMBER, repo.getNumber());
                 intent.putExtra(TAG_TYPE, TYPE_CEA_TABLE);
                 context.startService(intent);
             }
-            cursor.close();
         }
-        db.close();
     }
 
-    public void saveCEAExpense(String tableName,
-                               int date,
-                               int monthYear,
-                               String time,
-                               String enteredBy,
-                               String description,
-                               double totalCost,
-                               ArrayList<Double> costs,
-                               ArrayList<Double> paids,
-                               ArrayList<String> names
-    ) {
+    public void insertIntoCEA(String tableName,
+                              int date,
+                              int monthYear,
+                              String time,
+                              String enteredBy,
+                              String number,
+                              String synced,
+                              String description,
+                              double totalCost,
+                              ArrayList<Double> costs,
+                              ArrayList<Double> paids,
+                              ArrayList<String> names) {
         SQLiteDatabase db = this.getWritableDatabase();
         StringBuilder costHeader = new StringBuilder();
-        for (String name : names) {
-            costHeader.append(",").append(name.replaceAll(" ", "_")).append("_cost");
-        }
         StringBuilder paidHeader = new StringBuilder();
-        for (String name : names) {
-            paidHeader.append(",").append(name.replaceAll(" ", "_")).append("_paid");
-        }
         StringBuilder costList = new StringBuilder();
-        for (double cost : costs) {
-            costList.append(",").append(cost);
-        }
         StringBuilder paidList = new StringBuilder();
-        for (double cost : paids) {
-            paidList.append(",").append(cost);
+        for (int i = 0; i < names.size(); i++) {
+            costHeader.append(",").append(names.get(i).replaceAll(" ", "_")).append("_cost");
+            paidHeader.append(",").append(names.get(i).replaceAll(" ", "_")).append("_paid");
+            costList.append(",").append(costs.get(i));
+            paidList.append(",").append(paids.get(i));
         }
-        String query = "insert into " + tableName + "(date,monthYear,description,totalCost" + costHeader + paidHeader + ",time,enteredBy) Values(" + date + "," + monthYear + ",'" + description + "'," + totalCost + costList + paidList + ",'" + time + "','" + enteredBy + "')";
+        String query = "insert into "
+                + tableName
+                + "(date,monthYear,description,totalCost"
+                + costHeader + paidHeader
+                + ",time,enteredBy,number,synced) Values("
+                + date + "," + monthYear + ",'" + description
+                + "'," + totalCost + costList + paidList
+                + ",'" + time + "','" + enteredBy + "','"
+                + number + "','" + synced + "')";
+        db.execSQL(query);
+        db.close();
+
+    }
+
+    public void updateCEAById(String tableName, String cName, String st, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + tableName + " SET " + cName + "='" + st + "' WHERE id=" + id;
         db.execSQL(query);
         db.close();
     }
+
+//    public void updateCEAExpense(String tableName,
+//                                 int id,
+//                                 int date,
+//                                 int monthYear,
+//                                 String time,
+//                                 String enteredBy,
+//                                 String description,
+//                                 double totalCost,
+//                                 ArrayList<Double> costs,
+//                                 ArrayList<Double> paids,
+//                                 ArrayList<String> names
+//    ) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        StringBuilder costList = new StringBuilder();
+//        StringBuilder paidList = new StringBuilder();
+//
+//        for (int i = 0; i < names.size(); i++) {
+//            costList.append(",").append(names.get(i).replaceAll(" ", "_")).append("_cost=").append(costs.get(i));
+//            paidList.append(",").append(names.get(i).replaceAll(" ", "_")).append("_paid=").append(paids.get(i));
+//
+//        }
+//
+//        String query = "update " + tableName + " set date=" + date + ",monthYear=" + monthYear + ",description='" + description + "',totalCost=" + totalCost + ",time='" + time + "',enteredBy='" + enteredBy + "'" + paidList + costList + " where id=" + id;
+//        db.execSQL(query);
+//        db.close();
+//    }
 
     public void updateCEARowCount(String tableId, int rowCount) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -258,7 +365,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public LinkedHashMap<String, String> getSpecificRow(String tableName, int oldRC, int currentRC) {
+    public LinkedHashMap<String, String> getSpecificRows(String tableName, int oldRC, int currentRC) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + tableName + " WHERE id BETWEEN " + oldRC + " AND " + currentRC;
         Cursor cursor = db.rawQuery(query, null);
@@ -272,6 +379,27 @@ public class DBHelper extends SQLiteOpenHelper {
         return rowMap;
     }
 
+    public String getSpecificRow(String tableName, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + tableName + " WHERE id=" + id;
+        Cursor cursor = db.rawQuery(query, null);
+        ArrayList<String> rows = Functions.cursorToStringList(cursor);
+        db.close();
+        return rows.get(0);
+    }
+
+    public LinkedHashMap<Integer, String> getRowByUnSynced(String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM "
+                + tableName
+                + " WHERE number='"
+                + repo.getNumber() + "' and synced='f'";
+        Cursor cursor = db.rawQuery(query, null);
+        LinkedHashMap<Integer, String> rows = Functions.cursorToStringMap(cursor);
+        db.close();
+        return rows;
+    }
+
     public LinkedHashMap<String, CEA> getCEAAccounts() {
         LinkedHashMap<String, CEA> ceaMap = new LinkedHashMap<>();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -281,7 +409,7 @@ public class DBHelper extends SQLiteOpenHelper {
             for (int i = 0; i < cursor.getInt(1); i++) {
                 names.add(cursor.getString(4 + i));
             }
-            CEA cea=new CEA(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), names);
+            CEA cea = new CEA(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), names);
             ceaMap.put(cursor.getString(3), cea);
         }
         cursor.close();
@@ -367,23 +495,25 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<CEARow> getCEATableRows(String tableName, int monthYear, int noOfPeople) {
         ArrayList<CEARow> caRows = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "Select * from " + tableName + " where monthYear=" + monthYear + " ORDER BY date DESC, id DESC ";
+        String query = "Select * from " + tableName + " where monthYear=" + monthYear + " ORDER BY date DESC,time DESC, id DESC";
         Cursor cursor = db.rawQuery(query, null);
         while (cursor.moveToNext()) {
             int date = cursor.getInt(1);
             String time = cursor.getString(3);
             String enteredBy = cursor.getString(4);
-            String description = cursor.getString(5);
-            double totalCost = cursor.getDouble(6);
+            String number = cursor.getString(5);
+            String synced = cursor.getString(6);
+            String description = cursor.getString(7);
+            double totalCost = cursor.getDouble(8);
             double[] costs = new double[noOfPeople];
-            for (int i = 7; i < (7 + noOfPeople); i++) {
-                costs[i - 7] = cursor.getDouble(i);
+            for (int i = 9; i < (9 + noOfPeople); i++) {
+                costs[i - 9] = cursor.getDouble(i);
             }
             double[] paids = new double[noOfPeople];
-            for (int i = (7 + noOfPeople); i < 7 + (2 * noOfPeople); i++) {
-                paids[i - (7 + noOfPeople)] = cursor.getDouble(i);
+            for (int i = (9 + noOfPeople); i < 9 + (2 * noOfPeople); i++) {
+                paids[i - (9 + noOfPeople)] = cursor.getDouble(i);
             }
-            caRows.add(new CEARow(description, time, enteredBy, date, totalCost, paids, costs));
+            caRows.add(new CEARow(description, time, enteredBy, number, synced, date, totalCost, paids, costs));
         }
         cursor.close();
         db.close();

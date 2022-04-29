@@ -6,7 +6,6 @@ import static com.me.pa.others.Constants.TYPE_ONLINE;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

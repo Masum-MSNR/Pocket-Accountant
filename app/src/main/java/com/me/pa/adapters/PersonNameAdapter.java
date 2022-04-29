@@ -89,7 +89,7 @@ public class PersonNameAdapter extends RecyclerView.Adapter<PersonNameAdapter.Vi
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() < 5) {
+                if (charSequence.length() < 2) {
                     holder.binding.personNameEt.setError(context.getString(R.string.person_name_error), errorIcon);
                 }
                 names.set(holder.getAdapterPosition(), charSequence.toString().replaceAll(" ", "_"));

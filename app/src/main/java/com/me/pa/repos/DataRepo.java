@@ -40,8 +40,8 @@ public class DataRepo {
 
 
     public void update(Context context) {
-        loadMutableExpenseAccountList(context);
         loadMutableCEAList(context);
+        loadMutableExpenseAccountList(context);
         loadMutableCEAPersonsExpenseList(context);
         loadMutableCEATotalCostList(context);
         loadMutableCEATables(context);

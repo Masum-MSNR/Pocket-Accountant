@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
         android:name=".application.App"
         android:allowBackup="true"
@@ -19,6 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PA.NoActionBar"
         android:usesCleartextTraffic="true">
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.me.pa.provider"
@@ -37,11 +37,16 @@
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.ViewCollectiveAccount"
+            android:exported="false"
+            android:theme="@style/Theme.PA.NoActionBar" />
+        <activity
+            android:name=".activities.ViewPersonalExpense"
             android:exported="false"
             android:theme="@style/Theme.PA.NoActionBar" />
         <activity
@@ -62,7 +67,7 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PA.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.OnBoarding"
@@ -71,10 +76,8 @@
             android:theme="@style/transparentStatusAndNavigationBar"
             tools:ignore="LockedOrientationActivity" />
 
-
         <service android:name=".services.DataLoaderServiceF" />
         <service android:name=".services.DataLoaderServiceB" />
-
 
         <receiver
             android:name=".broadcastReceivers.OnBootReceiver"
@@ -87,7 +90,6 @@
                 <action android:name="android.intent.action.REBOOT" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".broadcastReceivers.NetworkStateReceiver"
             android:enabled="true"
@@ -99,7 +101,6 @@
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

@@ -26,20 +26,20 @@ import com.me.pa.R;
 import com.me.pa.adapters.CostAmountPickerAdapter;
 import com.me.pa.adapters.NothingSelectedSpinnerAdapter;
 import com.me.pa.adapters.PaidAmountPickerAdapter;
-import com.me.pa.databinding.DialogAddExpenseBinding;
+import com.me.pa.databinding.DialogAddCollectiveExpenseBinding;
 import com.me.pa.models.CEA;
 import com.me.pa.others.DialogCommunicator;
 import com.me.pa.others.TotalAmountSender;
 import com.me.pa.repos.DataRepo;
 import com.me.pa.utils.DatePicker;
-import com.me.pa.viewModels.DialogAddExpenseVM;
+import com.me.pa.viewModels.DialogAddCEVM;
 
-public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAmountSender {
+public class AddCEDialog extends AppCompatDialogFragment implements TotalAmountSender {
 
     Context context;
     CEA account;
-    DialogAddExpenseBinding binding;
-    DialogAddExpenseVM viewModel;
+    DialogAddCollectiveExpenseBinding binding;
+    DialogAddCEVM viewModel;
     ArrayAdapter<String> paidNameAdapter, costNameAdapter;
     PaidAmountPickerAdapter paidAmountPickerAdapter;
     CostAmountPickerAdapter costAmountPickerAdapter;
@@ -52,7 +52,7 @@ public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAm
     boolean isDateAdded = false, isTitleValid = false, isTotalCostValid = false, isPaidRvValid = false, isCostRvValid = false;
     double totalCost = 0;
 
-    public AddExpenseDialog(Context context, CEA account, DialogCommunicator communicator) {
+    public AddCEDialog(Context context, CEA account, DialogCommunicator communicator) {
         this.context = context;
         this.account = account;
         this.communicator = communicator;
@@ -67,13 +67,13 @@ public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAm
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.Dialog);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_add_expense, null);
-        binding = DialogAddExpenseBinding.bind(view);
+        View view = inflater.inflate(R.layout.dialog_add_collective_expense, null);
+        binding = DialogAddCollectiveExpenseBinding.bind(view);
 
         datePicker = new DatePicker();
         datePicker.initDialog(context, binding.dateEt);
 
-        viewModel = new ViewModelProvider(this).get(DialogAddExpenseVM.class);
+        viewModel = new ViewModelProvider(this).get(DialogAddCEVM.class);
         viewModel.init(context, account);
 
 
@@ -131,8 +131,8 @@ public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAm
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() <= 5) {
-                    binding.titleEt.setError("Minimum 5 letter!");
+                if (charSequence.length() < 2) {
+                    binding.titleEt.setError(context.getString(R.string.title_error));
                     isTitleValid = false;
                 } else {
                     isTitleValid = true;
@@ -155,7 +155,7 @@ public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAm
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() < 1) {
-                    binding.totalCostEt.setError("Enter total cost!");
+                    binding.totalCostEt.setError(context.getString(R.string.total_cost_error));
                     totalCost = 0;
                     isTotalCostValid = false;
                 } else {
@@ -225,7 +225,7 @@ public class AddExpenseDialog extends AppCompatDialogFragment implements TotalAm
             saveExpense();
             communicator.send(Integer.parseInt(String.valueOf(datePicker.getNewIntDate()).substring(0, 6)));
             DataRepo.getInstance(context).update(context);
-            hideKeyBoard(context,binding.addBt);
+            hideKeyBoard(context, binding.addBt);
             dismiss();
         });
 

@@ -68,7 +68,6 @@ public class OnlineDBHelper {
                         dbHelper1.createNewCEATable(TAG_TABLE + tableId, cea.getNames());
                         DataRepo.getInstance(context).update(context);
                         dbHelper1.close();
-//                        writeCEATable(TAG_TABLE + tableId, cea.getNoOfPerson(), cea.getNames());
                     }
                 });
             } else {
@@ -86,50 +85,10 @@ public class OnlineDBHelper {
                     dbHelper.insertIntoCollectiveAccounts(cea, false);
                     String tableName = TAG_TABLE + cea.getTableId();
                     dbHelper.createNewCEATable(tableName, cea.getNames());
-                    //writeCEATable(tableName, cea.getNoOfPerson(), cea.getNames());
                 }
                 dbHelper.close();
                 DataRepo.getInstance(context).update(context);
             }
         });
-    }
-
-
-    private void writeCEATable(String tableName, int noOfPerson, ArrayList<String> names) {
-        DBHelper dbHelper = new DBHelper(context);
-        FirebaseDatabase.getInstance().getReference(FDR_CEA_TABLES).child(tableName).child(TAG_TABLE).get().addOnCompleteListener(task2 -> {
-            if (task2.isSuccessful()) {
-                for (DataSnapshot ds : task2.getResult().getChildren()) {
-                    String s = ds.getValue(String.class);
-                    ArrayList<String> results = new ArrayList<>();
-                    int startIndex = 0, endIndex = 0;
-                    for (char c : s.toCharArray()) {
-                        if (c == '|') {
-                            results.add(s.substring(startIndex, endIndex));
-                            startIndex = endIndex + 1;
-                        }
-                        endIndex++;
-                    }
-                    ArrayList<Double> costAmounts = new ArrayList<>();
-                    ArrayList<Double> paidAmounts = new ArrayList<>();
-
-                    for (int i = 7; i < (7 + noOfPerson); i++) {
-                        costAmounts.add(Double.parseDouble(results.get(i)));
-                    }
-                    for (int i = (7 + noOfPerson); i < 7 + (2 * noOfPerson); i++) {
-                        paidAmounts.add(Double.parseDouble(results.get(i)));
-                    }
-                    dbHelper.saveCEAExpense(tableName,
-                            Integer.parseInt(results.get(1)),
-                            Integer.parseInt(results.get(2)),
-                            results.get(3), results.get(4),
-                            results.get(5), Double.parseDouble(results.get(6)),
-                            costAmounts, paidAmounts, names);
-                }
-                dbHelper.updateCEARowCount(tableName.substring(1), (int) task2.getResult().getChildrenCount());
-                DataRepo.getInstance(context).update(context);
-            }
-        });
-        dbHelper.close();
     }
 }

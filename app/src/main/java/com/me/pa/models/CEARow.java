@@ -1,7 +1,7 @@
 package com.me.pa.models;
 
 public class CEARow {
-    String description,time,enteredBy;
+    String description,time,enteredBy,number,synced;
     int date;
     double totalCost;
     double[] paids, costs;
@@ -9,10 +9,12 @@ public class CEARow {
     public CEARow() {
     }
 
-    public CEARow(String description, String time, String enteredBy, int date, double totalCost, double[] paids, double[] costs) {
+    public CEARow(String description, String time, String enteredBy, String number, String synced, int date, double totalCost, double[] paids, double[] costs) {
         this.description = description;
         this.time = time;
         this.enteredBy = enteredBy;
+        this.number = number;
+        this.synced = synced;
         this.date = date;
         this.totalCost = totalCost;
         this.paids = paids;
