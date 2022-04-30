@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.me.pa.R;
 import com.me.pa.databinding.DialogAddPersonalExpenseBinding;
+import com.me.pa.others.DialogCommunicator;
 import com.me.pa.utils.DatePicker;
 import com.me.pa.viewModels.DialogAddPEVM;
 
@@ -29,15 +30,17 @@ public class AddPEDialog extends AppCompatDialogFragment {
     DialogAddPEVM viewModel;
     DatePicker datePicker;
     String tableId;
+    DialogCommunicator communicator;
 
     int type = 1;
 
     boolean isDateAdded = false, isDescriptionValid = false, isAmountValid = false;
     double amount = 0;
 
-    public AddPEDialog(Context context, String tableId) {
+    public AddPEDialog(Context context, String tableId, DialogCommunicator communicator) {
         this.context = context;
         this.tableId = tableId;
+        this.communicator = communicator;
         datePicker = new DatePicker();
     }
 
@@ -164,5 +167,6 @@ public class AddPEDialog extends AppCompatDialogFragment {
         int date = datePicker.getNewIntDate();
         String description = binding.descriptionEt.getText().toString();
         viewModel.savePE(context, TAG_TABLE + tableId, date, description, amount, type);
+        communicator.send(Integer.parseInt(String.valueOf(date).substring(0, 6)));
     }
 }

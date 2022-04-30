@@ -8,7 +8,7 @@ import com.me.pa.helpers.DBHelper;
 import com.me.pa.models.CEA;
 import com.me.pa.models.CEARow;
 import com.me.pa.models.ExpenseAccount;
-import com.me.pa.models.PersonExpense;
+import com.me.pa.models.SingleCost;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -18,7 +18,7 @@ public class DataRepo {
 
     private MutableLiveData<ArrayList<ExpenseAccount>> mutableExpenseAccountList; //n
     private MutableLiveData<LinkedHashMap<String, CEA>> mutableCEAList; //n
-    private MutableLiveData<LinkedHashMap<String, ArrayList<PersonExpense>>> mutableCEAPersonsExpenseList; //n
+    private MutableLiveData<LinkedHashMap<String, ArrayList<SingleCost>>> mutableCEAPersonsExpenseList; //n
     private MutableLiveData<LinkedHashMap<String, Double>> mutableCEATotalCostList; //n
     private MutableLiveData<LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<CEARow>>>> mutableCEATableList; //n
 
@@ -90,7 +90,7 @@ public class DataRepo {
         return mutableExpenseAccountList;
     }
 
-    public MutableLiveData<LinkedHashMap<String, ArrayList<PersonExpense>>> getMutableCEAPersonsExpenseList() {
+    public MutableLiveData<LinkedHashMap<String, ArrayList<SingleCost>>> getMutableCEAPersonsExpenseList() {
         return mutableCEAPersonsExpenseList;
     }
 

@@ -27,7 +27,8 @@ import androidx.annotation.Nullable;
 import com.me.pa.models.CEA;
 import com.me.pa.models.CEARow;
 import com.me.pa.models.ExpenseAccount;
-import com.me.pa.models.PersonExpense;
+import com.me.pa.models.PersonalExpense;
+import com.me.pa.models.SingleCost;
 import com.me.pa.others.Functions;
 import com.me.pa.repos.DataRepo;
 import com.me.pa.repos.UserRepo;
@@ -196,7 +197,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 "Values(" + date + "," + Integer.parseInt(String.valueOf(date).substring(0, 6)) + ",'" + time + "','" + description + "'," + (type == 1 ? amount : 0) + "," + (type == 2 ? amount : 0) + "," + type + ")";
         db.execSQL(query);
         db.close();
-        getPE(tableName.substring(1));
     }
 
     public void getPE(String tableId) {
@@ -206,6 +206,42 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.moveToNext();
         cursorToString(cursor);
         db.close();
+    }
+
+
+    public ArrayList<Integer> getMonths(String tableId) {
+        ArrayList<Integer> months = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String tableName = TAG_TABLE + tableId;
+        Cursor cursor = db.rawQuery("Select distinct monthYear from " + tableName + " ORDER BY monthYear DESC", null);
+        while (cursor.moveToNext()) {
+            months.add(cursor.getInt(0));
+        }
+        cursor.close();
+        db.close();
+        return months;
+    }
+
+    public ArrayList<PersonalExpense> getExpenseByMonth(String tableId, int month) {
+        ArrayList<PersonalExpense> expenses = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String tableName = TAG_TABLE + tableId;
+        Cursor cursor = db.rawQuery("SELECT * FROM " + tableName + " WHERE monthYear=" + month + " ORDER BY date DESC,time DESC, id DESC", null);
+        while (cursor.moveToNext()) {
+            PersonalExpense personalExpense = new PersonalExpense(
+                    cursor.getInt(0),
+                    cursor.getInt(1),
+                    cursor.getInt(2),
+                    cursor.getString(3),
+                    cursor.getString(4),
+                    cursor.getDouble(5),
+                    cursor.getDouble(6),
+                    cursor.getInt(7));
+            expenses.add(personalExpense);
+        }
+        cursor.close();
+        db.close();
+        return expenses;
     }
 
 
@@ -417,14 +453,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return ceaMap;
     }
 
-    public LinkedHashMap<String, ArrayList<PersonExpense>> getCEAPersonExpenses() {
-        LinkedHashMap<String, ArrayList<PersonExpense>> ceaPersonExpensesMap = new LinkedHashMap<>();
+    public LinkedHashMap<String, ArrayList<SingleCost>> getCEAPersonExpenses() {
+        LinkedHashMap<String, ArrayList<SingleCost>> ceaPersonExpensesMap = new LinkedHashMap<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("Select * from collectiveAccounts", null);
         while (cursor.moveToNext()) {
             String tableId = cursor.getString(3);
             ArrayList<String> names = new ArrayList<>(getCEAPersonNamesByTable(tableId));
-            ArrayList<PersonExpense> personExpenses = new ArrayList<>();
+            ArrayList<SingleCost> personExpenses = new ArrayList<>();
 
             for (String name : names) {
                 String nName = name.replaceAll(" ", "_");
@@ -432,11 +468,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 double cost = sumColumn(TAG_TABLE + tableId, nName + "_cost");
                 double due = cost - paid;
                 if (due < 0) {
-                    personExpenses.add(new PersonExpense(name, paid, cost, 0, -due));
+                    personExpenses.add(new SingleCost(name, paid, cost, 0, -due));
                 } else if (due > 0) {
-                    personExpenses.add(new PersonExpense(name, paid, cost, due, 0));
+                    personExpenses.add(new SingleCost(name, paid, cost, due, 0));
                 } else {
-                    personExpenses.add(new PersonExpense(name, paid, cost, 0, 0));
+                    personExpenses.add(new SingleCost(name, paid, cost, 0, 0));
                 }
             }
             ceaPersonExpensesMap.put(tableId, personExpenses);

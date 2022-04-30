@@ -27,11 +27,11 @@ import com.me.pa.R;
 import com.me.pa.activities.ViewCollectiveAccount;
 import com.me.pa.activities.ViewPersonalExpense;
 import com.me.pa.databinding.AdapterCollectiveExpenseAccountLayoutBinding;
-import com.me.pa.databinding.AdapterPersonalExpenseLayoutBinding;
+import com.me.pa.databinding.AdapterSingleExpenseLayoutBinding;
 import com.me.pa.helpers.DBHelper;
 import com.me.pa.helpers.DBSynchronizer;
 import com.me.pa.models.ExpenseAccount;
-import com.me.pa.models.PersonExpense;
+import com.me.pa.models.SingleCost;
 import com.me.pa.others.RVClickListener;
 import com.me.pa.repos.DataRepo;
 import com.me.pa.repos.UserRepo;
@@ -71,7 +71,7 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         switch (viewType) {
             case 1:
-                View pea = LayoutInflater.from(context).inflate(R.layout.adapter_personal_expense_layout, parent, false);
+                View pea = LayoutInflater.from(context).inflate(R.layout.adapter_single_expense_layout, parent, false);
                 viewHolder = new PEAViewHolder(pea);
                 break;
             case 2:
@@ -111,7 +111,7 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 String totalCost = (totalCostD != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", totalCostD) : " - ");
                 ch.binding.totalCostTv.setText(totalCost);
 
-                ArrayList<PersonExpense> personExpenses = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEAPersonsExpenseList().getValue()).get(accounts.get(p).getTableId())));
+                ArrayList<SingleCost> personExpenses = new ArrayList<>(Objects.requireNonNull(Objects.requireNonNull(dataRepo.getMutableCEAPersonsExpenseList().getValue()).get(accounts.get(p).getTableId())));
                 int noOfPerson = personExpenses.size();
 
                 switch (noOfPerson) {
@@ -175,11 +175,11 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public static class PEAViewHolder extends RecyclerView.ViewHolder {
 
-        AdapterPersonalExpenseLayoutBinding binding;
+        AdapterSingleExpenseLayoutBinding binding;
 
         public PEAViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = AdapterPersonalExpenseLayoutBinding.bind(itemView);
+            binding = AdapterSingleExpenseLayoutBinding.bind(itemView);
         }
     }
 
@@ -213,7 +213,7 @@ public class ExpenseAccountAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-    private void layoutMaker(TextView nameTv, TextView paidTv, TextView costTv, TextView owingTv, TextView dueTv, LinearLayout ll, PersonExpense personExpense) {
+    private void layoutMaker(TextView nameTv, TextView paidTv, TextView costTv, TextView owingTv, TextView dueTv, LinearLayout ll, SingleCost personExpense) {
         nameTv.setText(personExpense.getName());
         String paid = context.getString(R.string.paid) + (personExpense.getPaid() != 0 ? context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", personExpense.getPaid()) : " - ");
         paidTv.setText(Html.fromHtml(paid));

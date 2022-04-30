@@ -19,16 +19,6 @@
         android:theme="@style/Theme.PA.NoActionBar"
         android:usesCleartextTraffic="true">
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.me.pa.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
         <activity
             android:name=".activities.ActivityLauncher"
             android:exported="true"

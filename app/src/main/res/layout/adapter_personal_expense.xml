@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginTop="10dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/square_card"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="10dp"
+            app:cardBackgroundColor="@color/color_primary"
+            app:cardCornerRadius="1dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/description_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/description_tv" />
+
+        <TextView
+            android:id="@+id/description_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/kohinoor_bangla_medium"
+            android:paddingHorizontal="5dp"
+            android:textColor="@color/dark_gray"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/square_card"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/i_or_e_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:textAlignment="textStart"
+            android:textColor="@color/green"
+            app:layout_constraintEnd_toStartOf="@+id/v_guideline_50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/description_tv" />
+
+        <TextView
+            android:id="@+id/amount_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:textAlignment="textEnd"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/i_or_e_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/i_or_e_tv"
+            app:layout_constraintTop_toTopOf="@+id/i_or_e_tv" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/v_guideline_50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".50" />
+
+
+        <TextView
+            android:id="@+id/date_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kohinoor_bangla_medium"
+            android:paddingVertical="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:textColor="@color/dark_gray"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/v_guideline_50"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/amount_tv" />
+
+        <TextView
+            android:id="@+id/details_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kohinoor_bangla_medium"
+            android:paddingVertical="5dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp"
+            android:textAlignment="textEnd"
+            android:textColor="@color/dark_gray"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/date_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/v_guideline_50"
+            app:layout_constraintTop_toTopOf="@+id/date_tv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

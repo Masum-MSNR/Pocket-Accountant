@@ -1,13 +1,13 @@
 package com.me.pa.models;
 
-public class PersonExpense {
+public class SingleCost {
     String name;
     double paid,cost, due, receive;
 
-    public PersonExpense() {
+    public SingleCost() {
     }
 
-    public PersonExpense(String name, double paid, double cost, double due, double receive) {
+    public SingleCost(String name, double paid, double cost, double due, double receive) {
         this.name = name;
         this.paid = paid;
         this.cost = cost;
