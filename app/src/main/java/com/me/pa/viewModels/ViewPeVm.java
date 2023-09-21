@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 public class ViewPeVm extends AndroidViewModel {
 
     DBHelper dbHelper;
-    public int currentMonth,oldMonthRange=0,oldExpensesRange=0;
+    public int currentMonth, oldMonthRange = 0, oldExpensesRange = 0;
     public String tableId;
 
     public MutableLiveData<ArrayList<Integer>> months;
@@ -36,7 +36,7 @@ public class ViewPeVm extends AndroidViewModel {
     public void init(String tableId) {
         this.tableId = tableId;
         loadMonths().addOnSuccessListener(list -> {
-            if (list == null)
+            if (list == null || list.size() == 0)
                 return;
             currentMonth = list.get(0);
             months.setValue(list);

@@ -64,6 +64,7 @@
     <string name="_income"><![CDATA[<font color=\"#008000\">আয়: </font>]]></string>
     <string name="_expense"><![CDATA[<font color=\"#FF0000\">ব্যয়: </font>]]></string>
     <string name="amount">পরিমাণ</string>
+    <string name="add_existing">যোগ করুন</string>
 
     <string-array name="account_types">
         <item>ব্যক্তিগত খরচ</item>

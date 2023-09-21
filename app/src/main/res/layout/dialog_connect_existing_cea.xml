@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/account_id"
             android:importantForAutofill="no"
-            android:inputType="textNoSuggestions"
+            android:inputType="number"
             android:paddingHorizontal="5dp"
             android:paddingBottom="15dp"
             android:textColorHint="@color/light_dark_gray"

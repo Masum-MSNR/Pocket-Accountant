@@ -47,11 +47,13 @@ public class PersonalExpenseAdapter extends RecyclerView.Adapter<PersonalExpense
         if (expenses.get(p).getType() == 1) {
             h.binding.iOrETv.setText(context.getString(R.string.income));
             h.binding.iOrETv.setTextColor(context.getColor(R.color.green));
-            h.binding.amountTv.setText(String.valueOf(expenses.get(p).getIncome()));
+            String income = context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", expenses.get(p).getIncome());
+            h.binding.amountTv.setText(income);
         } else {
             h.binding.iOrETv.setText(context.getString(R.string.expense));
             h.binding.iOrETv.setTextColor(context.getColor(R.color.red));
-            h.binding.amountTv.setText(String.valueOf(expenses.get(p).getExpense()));
+            String expense = context.getString(R.string.tkSign) + " " + String.format(language, "%.2f", expenses.get(p).getExpense());
+            h.binding.amountTv.setText(expense);
         }
         h.binding.dateTv.setText(getDate(String.valueOf(expenses.get(p).getDate())));
         h.binding.detailsTv.setText(getDetails(p));

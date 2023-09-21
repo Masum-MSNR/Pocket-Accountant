@@ -25,4 +25,6 @@ public class LoadingDialog extends AppCompatDialogFragment {
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogFadeAnimation;
         return dialog;
     }
+
+
 }

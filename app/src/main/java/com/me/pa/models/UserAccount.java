@@ -1,17 +1,16 @@
 package com.me.pa.models;
 
 public class UserAccount {
-    String phoneNumber, fullName, language, image;
+    String phoneNumber, fullName, language;
     boolean completeAccount;
 
     public UserAccount() {
     }
 
-    public UserAccount(String phoneNumber, String fullName, String language, String image, boolean completeAccount) {
+    public UserAccount(String phoneNumber, String fullName, String language, boolean completeAccount) {
         this.phoneNumber = phoneNumber;
         this.fullName = fullName;
         this.language = language;
-        this.image = image;
         this.completeAccount = completeAccount;
     }
 
@@ -37,14 +36,6 @@ public class UserAccount {
 
     public void setLanguage(String language) {
         this.language = language;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public boolean isCompleteAccount() {

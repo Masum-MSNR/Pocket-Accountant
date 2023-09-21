@@ -38,14 +38,14 @@ public class ImageCropperDialog extends AppCompatDialogFragment {
 
         binding = DialogImageCropperBinding.bind(view);
 
-        binding.cropImageView.setImageUriAsync(imageUri);
-
-        binding.closeIbt.setOnClickListener(v -> dismiss());
-        binding.okIbt.setOnClickListener(v -> {
-            listener.getBitmap(binding.cropImageView.getCroppedImage());
-            dismiss();
-        });
-
+//        binding.cropImageView.setImageUriAsync(imageUri);
+//
+//        binding.closeIbt.setOnClickListener(v -> dismiss());
+//        binding.okIbt.setOnClickListener(v -> {
+//            listener.getBitmap(binding.cropImageView.getCroppedImage());
+//            dismiss();
+//        });
+//
 
         builder.setView(view);
         return builder.create();

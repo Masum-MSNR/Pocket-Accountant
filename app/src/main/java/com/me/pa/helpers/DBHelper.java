@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -304,7 +305,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 + ",'" + time + "','" + repo.getName() + "','" + number + "','f')";
         db.execSQL(query);
         db.close();
-
         if (repo.getAccountType().equals(TYPE_ONLINE)) {
             Intent intent;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -45,6 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
+            android:textStyle="bold"
             android:textAlignment="textStart"
             android:textColor="@color/green"
             app:layout_constraintEnd_toStartOf="@+id/v_guideline_50"
@@ -54,6 +55,7 @@
         <TextView
             android:id="@+id/amount_tv"
             android:layout_width="0dp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:paddingHorizontal="10dp"
             android:textAlignment="textEnd"

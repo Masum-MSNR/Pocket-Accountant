@@ -75,6 +75,8 @@
     <string name="_income"><![CDATA[<font color=\"#008000\">Income: </font>]]></string>
     <string name="_expense"><![CDATA[<font color=\"#FF0000\">Expense: </font>]]></string>
     <string name="amount">Amount</string>
+    <string name="connect">Connect</string>
+    <string name="add_existing">Add Existing</string>
 
     <string-array name="account_types">
         <item>Personal Expense</item>

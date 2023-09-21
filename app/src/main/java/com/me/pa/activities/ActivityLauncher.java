@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.me.pa.repos.UserRepo;
 

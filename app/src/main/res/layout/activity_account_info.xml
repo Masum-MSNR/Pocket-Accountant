@@ -7,127 +7,86 @@
     android:layout_height="match_parent"
     tools:context=".activities.AccountInfo">
 
-    <TextView
-        android:id="@+id/congratulations_tv"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:fontFamily="@font/kohinoor_bangla_medium"
-        android:letterSpacing=".05"
-        android:paddingTop="10dp"
-        android:text="@string/congratulations"
-        android:textColor="@color/lamp_black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/command_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingHorizontal="25dp"
-        android:text="@string/account_created_command_1"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/congratulations_tv" />
-
-    <RelativeLayout
-        android:id="@+id/image_picker_rl"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/command_tv"
-        app:layout_constraintVertical_bias="0.100000024">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35000002">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            app:cardBackgroundColor="@color/white_smoke"
-            app:cardCornerRadius="50dp"
-            app:cardElevation="0dp">
+        <TextView
+            android:id="@+id/congratulations_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kohinoor_bangla_medium"
+            android:letterSpacing=".05"
+            android:paddingTop="10dp"
+            android:text="@string/congratulations"
+            android:textColor="@color/lamp_black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/image_iv"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:contentDescription="@string/image"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_outline_account_circle_24" />
-        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/command_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingHorizontal="25dp"
+            android:text="@string/account_created_command_1"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/congratulations_tv" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/choice_image_bt"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="5dp"
-            app:cardBackgroundColor="@color/light_gray"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="0dp">
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/image"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_baseline_photo_camera_24"
-                app:tint="@color/lamp_black" />
-        </androidx.cardview.widget.CardView>
-    </RelativeLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/full_name_til"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="25dp"
-        android:hint="@string/full_name"
-        android:textColorHint="@color/light_dark_gray"
-        app:boxCornerRadiusBottomEnd="10dp"
-        app:boxCornerRadiusBottomStart="10dp"
-        app:boxCornerRadiusTopEnd="10dp"
-        app:boxCornerRadiusTopStart="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_picker_rl"
-        app:startIconDrawable="@drawable/ic_outline_person_24">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/full_name_et"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/full_name_til"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:paddingStart="50dp"
-            android:paddingEnd="0dp"
-            android:textColor="@color/lamp_black" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
+            android:hint="@string/full_name"
+            android:textColorHint="@color/light_dark_gray"
+            app:boxCornerRadiusBottomEnd="10dp"
+            app:boxCornerRadiusBottomStart="10dp"
+            app:boxCornerRadiusTopEnd="10dp"
+            app:boxCornerRadiusTopStart="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/command_tv"
+            app:startIconDrawable="@drawable/ic_outline_person_24">
 
-    <Button
-        android:id="@+id/start_using_bt"
-        style="@style/buttonStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        android:enabled="false"
-        android:text="@string/_start_using"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/full_name_til" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/full_name_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:paddingStart="50dp"
+                android:paddingEnd="0dp"
+                android:textColor="@color/lamp_black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/start_using_bt"
+            style="@style/buttonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="25dp"
+            android:enabled="false"
+            android:text="@string/_start_using"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/full_name_til" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

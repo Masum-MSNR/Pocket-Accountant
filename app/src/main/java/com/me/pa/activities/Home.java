@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,6 @@ import com.me.pa.dialogs.AddAccountDialog;
 import com.me.pa.dialogs.ConnectCEADialog;
 import com.me.pa.helpers.OnlineDBHelper;
 import com.me.pa.models.ExpenseAccount;
-import com.me.pa.others.Functions;
 import com.me.pa.others.RVClickListener;
 import com.me.pa.repos.DataRepo;
 import com.me.pa.repos.UserRepo;
@@ -76,7 +74,6 @@ public class Home extends AppCompatActivity implements RVClickListener {
         setSupportActionBar(binding.homeToolbar);
 
         navHeader = binding.drawer.getHeaderView(0);
-        ((ImageView) navHeader.findViewById(R.id.image_iv)).setImageBitmap(Functions.decodeBase64ToBitmap(userRepo.getImage()));
         ((TextView) navHeader.findViewById(R.id.full_name_tv)).setText(userRepo.getName());
         binding.nameTv.setText(userRepo.getName());
 
@@ -88,9 +85,13 @@ public class Home extends AppCompatActivity implements RVClickListener {
 
         if (userRepo.getAccountType().equals(TYPE_OFFLINE)) {
             navHeader.findViewById(R.id.number_tv).setVisibility(View.GONE);
+            binding.drawer.getMenu().clear();
+            binding.drawer.inflateMenu(R.menu.menu_navigation_drawer_offline);
         } else {
             ((TextView) navHeader.findViewById(R.id.number_tv)).setText(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhoneNumber());
             AppRepo.getInstance().getNetworkAvailable().observe(this, aBoolean -> ((CardView) navHeader.findViewById(R.id.status_indicator)).setCardBackgroundColor(aBoolean ? getColor(R.color.green) : getColor(R.color.gray)));
+            binding.drawer.getMenu().clear();
+            binding.drawer.inflateMenu(R.menu.menu_navigation_drawer);
         }
 
         drawerLayout = binding.drawerLayout;
@@ -137,7 +138,7 @@ public class Home extends AppCompatActivity implements RVClickListener {
                 startActivity(new Intent(this, OnBoarding.class));
                 Toast.makeText(this, "Log Out Successful.", Toast.LENGTH_SHORT).show();
                 finish();
-            } else if (item.getItemId() == R.id.old_cea) {
+            } else if (item.getItemId() == R.id.add_existing) {
                 ConnectCEADialog connectCEADialog = new ConnectCEADialog(this);
                 connectCEADialog.show(getSupportFragmentManager(), connectCEADialog.getTag());
             }

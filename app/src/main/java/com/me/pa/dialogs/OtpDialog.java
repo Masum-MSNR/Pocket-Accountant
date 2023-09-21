@@ -239,7 +239,6 @@ public class OtpDialog extends AppCompatDialogFragment {
                                                     loggedInUserRepo.setName(Objects.requireNonNull(account).getFullName());
                                                     loggedInUserRepo.setLanguage(account.getLanguage());
                                                     Functions.changeLanguage(context, account.getLanguage());
-                                                    loggedInUserRepo.setImage(account.getImage());
                                                     loggedInUserRepo.setCompleteAccount(account.isCompleteAccount());
                                                     loggedInUserRepo.initialCommit(context);
                                                     loggedInUserRepo.finalCommit(context);

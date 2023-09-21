@@ -14,7 +14,7 @@ import com.me.pa.models.UserAccount;
 
 public class UserRepo {
     public static UserRepo instance;
-    String number, name, language, image, accountType;
+    String number, name, language, accountType;
     boolean completeAccount;
 
     public UserRepo() {
@@ -32,7 +32,6 @@ public class UserRepo {
         SharedPreferences preferences = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         name = preferences.getString("fullName", "");
         language = preferences.getString("local", "en");
-        image = preferences.getString("profileImage", "");
         accountType = preferences.getString("accountType", "");
         completeAccount = preferences.getBoolean("completeAccount", false);
     }
@@ -46,7 +45,7 @@ public class UserRepo {
         editor.putBoolean("completeAccount", completeAccount);
         editor.apply();
         if (accountType.equals("online") && !completeAccount) {
-            UserAccount account = new UserAccount(number, "", language, "", false);
+            UserAccount account = new UserAccount(number, "", language, false);
             FirebaseDatabase.getInstance().getReference(FDR_USER_ACCOUNTS).child(number).setValue(account);
         }
     }
@@ -54,12 +53,11 @@ public class UserRepo {
     public void finalCommit(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("profileImage", image);
         editor.putString("fullName", name);
         editor.putBoolean("completeAccount", completeAccount);
         editor.apply();
         if (accountType.equals("online") && !completeAccount) {
-            UserAccount account = new UserAccount(number, name, language, image, true);
+            UserAccount account = new UserAccount(number, name, language, true);
             FirebaseDatabase.getInstance().getReference(FDR_USER_ACCOUNTS).child(number).setValue(account);
         }
     }
@@ -110,14 +108,6 @@ public class UserRepo {
 
     public void setCompleteAccount(boolean completeAccount) {
         this.completeAccount = completeAccount;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public String getAccountType() {
