@@ -1,9 +1,10 @@
 name: Deploy Production
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
 
-job:
+jobs:
   distribute:
       name: Distribute App
       runs-on: ubuntu-latest
