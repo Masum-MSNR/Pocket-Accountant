@@ -25,6 +25,9 @@ jobs:
             gradlePath: app/build.gradle
             versionCode: ${{ github.run_number }}
 
+        - name: Make gradlew executable
+          run: chmod +x ./gradlew
+
         - name: Assemble Release Bundle
           run: ./gradlew bundleRelease
 
